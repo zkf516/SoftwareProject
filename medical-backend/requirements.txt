@@ -2,3 +2,5 @@ flask
 pandas
 openpyxl
 sqlalchemy
+Flask-Cors
+PyJWT

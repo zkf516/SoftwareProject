@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗系统登录 - 深色专业风格</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <!-- 粒子背景容器 -->
+    <div id="particles-js"></div>
+    <div class="background-overlay"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>医疗系统登录</h2>
+                <p>请选择您的身份并登录系统</p>
+            </div>
+
+            <div class="identity-selector">
+                <div class="identity-slider"></div>
+                <div class="identity-option active" data-identity="patient">病人登录</div>
+                <div class="identity-option" data-identity="doctor">医生登录</div>
+            </div>
+
+            <form id="patient-form" class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="patient-name" placeholder="请输入姓名" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="patient-number" placeholder="请输入住院号/卡号" required>
+                </div>
+                <button type="submit" class="login-btn">登 录</button>
+            </form>
+
+            <form id="doctor-form" class="login-form" style="display: none;">
+                <div class="input-group">
+                    <i class="fas fa-user-md"></i>
+                    <input type="text" id="doctor-name" placeholder="请输入姓名" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" id="doctor-phone" placeholder="请输入手机号" required>
+                </div>
+                <button type="submit" class="login-btn">登 录</button>
+            </form>
+
+            <div class="register-section">
+                <p class="register-text">还没有账号？</p>
+                <button class="register-btn">立即注册</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入粒子效果库 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
+
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import os
 
 def excel_to_sqlite(excel_file, table_name, db_path='medical.db'):
@@ -12,5 +13,5 @@ def excel_to_sqlite(excel_file, table_name, db_path='medical.db'):
 def query_sqlite(sql, db_path='medical.db'):
     engine = create_engine(f'sqlite:///{db_path}')
     with engine.connect() as conn:
-        result = conn.execute(sql)
-        return [dict(row) for row in result]
+        result = conn.execute(text(sql))
+        return [dict(row._mapping) for row in result]
