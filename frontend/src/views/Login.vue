@@ -2,22 +2,42 @@
   <div class="login-page">
     <div class="login-container">
       <LoginCard @register="onRegister" @patient-submit="onPatientSubmit" @doctor-submit="onDoctorSubmit" />
+      <div v-if="busy" class="overlay">
+        <div class="spinner" />
+        <div class="msg">{{ busyMessage }}</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import LoginCard from '../components/LoginCard.vue'
+import { usePatientStore } from '../stores/patient'
+import { useRecordsStore } from '../stores/records'
 
 export default {
   name: 'LoginPage',
   components: { LoginCard },
+  data() {
+    return {
+      busy: false,
+      busyMessage: ''
+    }
+  },
   methods: {
+    // 跳转注册页面
     onRegister() {
       this.$router.push('/register')
     },
+
+    // 处理病人登录
     async onPatientSubmit(payload) {
       try {
+        this.busy = true
+        this.busyMessage = '正在登录…'
+        // 先清空全局状态，避免连续登录残留数据
+        try { usePatientStore().clear() } catch (_) {}
+        try { useRecordsStore().clear() } catch (_) {}
         const res = await fetch('http://localhost:3000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -28,13 +48,30 @@ export default {
         if (!res.ok) throw new Error(data.error || '登录失败')
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', data.role)
+        // 预拉取：病人信息与其检查记录，提升进入页面的首屏速度
+        const pStore = usePatientStore()
+        this.busyMessage = '正在加载个人信息…'
+        await pStore.fetchMe(true)
+        const rStore = useRecordsStore()
+        this.busyMessage = '正在加载检查记录…'
+        await rStore.fetchForCurrent(true)
         this.$router.push('/dashboard')
       } catch (e) {
         alert(e.message)
+      } finally {
+        this.busy = false
+        this.busyMessage = ''
       }
     },
+
+    // 处理医生登录
     async onDoctorSubmit(payload) {
       try {
+        this.busy = true
+        this.busyMessage = '正在登录…'
+        // 清空全局状态，避免连续登录数据残留
+        try { usePatientStore().clear() } catch (_) {}
+        try { useRecordsStore().clear() } catch (_) {}
         const res = await fetch('http://localhost:3000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -45,9 +82,13 @@ export default {
         if (!res.ok) throw new Error(data.error || '登录失败')
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', data.role)
-        this.$router.push('/doctor')
+        // 医生端通常需要先选择患者，这里仅完成登录与状态清空
+        this.$router.push('/dashboard')
       } catch (e) {
         alert(e.message)
+      } finally {
+        this.busy = false
+        this.busyMessage = ''
       }
     },
   },
@@ -95,4 +136,27 @@ export default {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
 }
+
+/* 提交后的全屏遮罩与进度提示 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.spinner {
+  width: 46px;
+  height: 46px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: var(--accent, #00ffe0);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 14px;
+}
+.msg { color: #fff; font-size: 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

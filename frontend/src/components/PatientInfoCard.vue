@@ -16,33 +16,63 @@
       <button class="nav-btn" @click="$emit('to-dashboard')">基本信息</button>
       <button class="nav-btn" @click="$emit('to-records')">病历数据</button>
       <button class="nav-btn" @click="$emit('to-chat')">医疗建议</button>
-      <button class="nav-btn" @click="$emit('next')">下一页</button>
+  <button class="nav-btn" @click="onLogout">退出登录</button>
     </div>
   </div>
 </template>
 
 <script>
+import { usePatientStore } from '../stores/patient'
+import { useRecordsStore } from '../stores/records'
 export default {
   name: 'PatientInfoCard',
   props: {
-    patient: { type: Array, default: null }
+    // 仅保留对象形态：来自 /api/patient/me
+    patient: { type: Object, required: false, default: null }
+  },
+  methods: {
+    onLogout() {
+      try { localStorage.removeItem('token'); localStorage.removeItem('role') } catch (_) {}
+      try { usePatientStore().clear() } catch (_) {}
+      try { useRecordsStore().clear() } catch (_) {}
+      this.$router.push('/login')
+    }
   },
   computed: {
-    p() {
-      if (this.patient && Array.isArray(this.patient)) return this.patient
-      try {
-        const cached = JSON.parse(localStorage.getItem('loggedInUser'))
-        return Array.isArray(cached) ? cached : null
-      } catch (_) { return null }
+    p() { return this.patient },
+    // 以下字段从对象键读取
+    name() {
+      if (!this.p) return '---'
+      return this.p['姓名'] || this.p['name'] || '---'
     },
-    name() { return this.p?.[1] ?? '---' },
-    idNo() { return '--' },
-    inNo() { return this.p?.[2] ?? '--' },
-    cardNo() { return this.p?.[4] ?? '--' },
-    gender() { return '--' },
-    age() { return this.p?.[10] ?? '--' },
-    height() { return this.p?.[11] ?? '--' },
-    inpatient() { return this.p?.[3] ?? '--' }
+    idNo() {
+      if (!this.p) return '--'
+      return this.p['身份证号'] || this.p['id'] || this.p['idNo'] || '--'
+    },
+    inNo() {
+      if (!this.p) return '--'
+      return this.p['住院号'] || this.p['inNo'] || '--'
+    },
+    cardNo() {
+      if (!this.p) return '--'
+      return this.p['CARDNO'] || this.p['cardNo'] || '--'
+    },
+    gender() {
+      if (!this.p) return '--'
+      return this.p['性别'] || this.p['gender'] || '--'
+    },
+    age() {
+      if (!this.p) return '--'
+      return this.p['年龄'] || this.p['age'] || '--'
+    },
+    height() {
+      if (!this.p) return '--'
+      return this.p['身高'] || this.p['height'] || '--'
+    },
+    inpatient() {
+      if (!this.p) return '--'
+      return this.p['是否住院'] || this.p['inpatient'] || '--'
+    }
   }
 }
 </script>

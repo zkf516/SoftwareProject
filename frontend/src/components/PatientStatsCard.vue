@@ -19,18 +19,10 @@
 export default {
   name: 'PatientStatsCard',
   props: {
-    patient: { type: Array, default: null }
+    patient: { type: Object, default: null }
   },
   computed: {
-    p() {
-      if (this.patient && Array.isArray(this.patient)) return this.patient
-      try {
-        const cached = JSON.parse(localStorage.getItem('loggedInUser'))
-        return Array.isArray(cached) ? cached : null
-      } catch (_) {
-        return null
-      }
-    },
+    p() { return this.patient },
     items() {
       return [
         { key: 'bp', label: '血压', idx: 15 },
@@ -52,7 +44,26 @@ export default {
     valueOf(key) {
       const cfg = this.items.find((i) => i.key === key)
       if (!cfg || !this.p) return '--'
-      return this.p?.[cfg.idx] ?? '--'
+      // 对象字段映射（尽可能贴近中文列名）
+      const map = {
+        bp: ['血压', 'bp', 'BloodPressure'],
+        gestWeek: ['孕周', 'gestWeek'],
+        gravida: ['孕次', 'gravida'],
+        para: ['产次', 'para'],
+        admDx: ['入院诊断', 'admDx'],
+        disDx: ['出院诊断', 'disDx'],
+        preWt: ['孕前体重', 'preWt'],
+        admWt: ['入院体重', 'admWt'],
+        babySex: ['婴儿性别', 'babySex'],
+        fetalWt: ['胎儿体重', 'fetalWt'],
+        fetalLen: ['胎儿身长', 'fetalLen'],
+        delivery: ['分娩方式', 'delivery']
+      }
+      const keys = map[key] || []
+      for (const k of keys) {
+        if (this.p[k] !== undefined && this.p[k] !== null && this.p[k] !== '') return this.p[k]
+      }
+      return '--'
     }
   }
 }

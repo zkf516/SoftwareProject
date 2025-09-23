@@ -1,15 +1,17 @@
 <template>
   <div class="dashboard-grid dashboard-grid--single-right">
     <div class="left">
+      <div v-if="pError" class="banner error">{{ pError }}</div>
       <PatientInfoCard
+        :patient="patient"
         @to-dashboard="() => $router.push('/dashboard')"
         @to-records="() => $router.push('/records')"
         @to-chat="() => $router.push('/chat')"
-        @next="goNext"
       />
     </div>
     <div class="right-top">
-      <RecordsCard />
+      <div v-if="rError" class="banner error">{{ rError }}</div>
+      <RecordsCard :records="records" />
     </div>
   </div>
 </template>
@@ -17,27 +19,35 @@
 <script>
 import PatientInfoCard from '../components/PatientInfoCard.vue'
 import RecordsCard from '../components/RecordsCard.vue'
+import { usePatientStore } from '../stores/patient'
+import { useRecordsStore } from '../stores/records'
 
 export default {
   name: 'RecordsPage',
   components: { PatientInfoCard, RecordsCard },
-  methods: {
-    async goNext() {
-      try {
-        const currentIndex = parseInt(localStorage.getItem('loggedInIndex'))
-        const nextIndex = isNaN(currentIndex) ? 0 : currentIndex + 1
-        const resp = await fetch(`http://localhost:3000/getRowByIndex?index=${nextIndex}`)
-        if (!resp.ok) throw new Error('无数据或服务器错误')
-        const nextRow = await resp.json()
-        localStorage.setItem('loggedInIndex', nextIndex)
-        localStorage.setItem('loggedInUser', JSON.stringify(nextRow))
-        this.$router.push('/dashboard')
-      } catch (e) {
-        alert('已经是最后一位病人或发生错误！')
-        console.error('获取下一位病人失败：', e)
-      }
+  computed: {
+    patient() {
+      const store = usePatientStore()
+      return store.patient
+    },
+    records() {
+      const rStore = useRecordsStore()
+      return rStore.records
+    },
+    pError() { return usePatientStore().error },
+    rError() { return useRecordsStore().error }
+  },
+  async mounted() {
+    const pStore = usePatientStore()
+    const role = localStorage.getItem('role')
+    // 病人角色才需要获取个人信息；医生角色通常由选择患者来决定当前上下文
+    if (role === 'patient') {
+      await pStore.fetchMe()
     }
-  }
+    const rStore = useRecordsStore()
+    await rStore.fetchForCurrent()
+  },
+  methods: {}
 }
 </script>
 

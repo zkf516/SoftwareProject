@@ -1,18 +1,19 @@
 <template>
   <div class="dashboard-grid dashboard-grid--top-auto">
     <div class="left">
+      <div v-if="pError" class="banner error">{{ pError }}</div>
       <PatientInfoCard
+        :patient="patient"
         @to-dashboard="() => $router.push('/dashboard')"
         @to-records="() => $router.push('/records')"
         @to-chat="() => $router.push('/chat')"
-        @next="goNext"
       />
     </div>
     <div class="right-top">
-      <PatientStatsCard />
+  <PatientStatsCard :patient="patient" />
     </div>
     <div class="right-bottom">
-      <PatientNotesCard />
+  <PatientNotesCard :patient="patient" />
     </div>
   </div>
 </template>
@@ -21,24 +22,29 @@
 import PatientInfoCard from '../components/PatientInfoCard.vue'
 import PatientStatsCard from '../components/PatientStatsCard.vue'
 import PatientNotesCard from '../components/PatientNotesCard.vue'
+import { usePatientStore } from '../stores/patient'
 
 export default {
   name: 'DashboardPage',
   components: { PatientInfoCard, PatientStatsCard, PatientNotesCard },
+  mounted() {
+    this.ensurePatient()
+  },
+  computed: {
+    patient() {
+      const store = usePatientStore()
+      return store.patient
+    },
+    pError() {
+      return usePatientStore().error
+    }
+  },
   methods: {
-    async goNext() {
-      try {
-        const currentIndex = parseInt(localStorage.getItem('loggedInIndex'))
-        const nextIndex = isNaN(currentIndex) ? 0 : currentIndex + 1
-        const resp = await fetch(`http://localhost:3000/getRowByIndex?index=${nextIndex}`)
-        if (!resp.ok) throw new Error('无数据或服务器错误')
-        const nextRow = await resp.json()
-        localStorage.setItem('loggedInIndex', nextIndex)
-        localStorage.setItem('loggedInUser', JSON.stringify(nextRow))
-        this.$router.push('/dashboard')
-      } catch (e) {
-        alert('已经是最后一位病人或发生错误！')
-        console.error('获取下一位病人失败：', e)
+    ensurePatient() {
+      const store = usePatientStore()
+      const role = localStorage.getItem('role')
+      if (role === 'patient') {
+        store.fetchMe()
       }
     }
   }
@@ -47,4 +53,7 @@ export default {
 
 <style scoped>
 /* 使用全局的 .dashboard-grid 与卡片滚动规则；此处不做覆盖，避免与 PatientInfoCard 冲突 */
+.banner { padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
+.banner.info { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.banner.error { background: rgba(255,0,0,0.1); color: #ff6b6b; }
 </style>

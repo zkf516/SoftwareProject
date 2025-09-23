@@ -17,4 +17,14 @@ const router = createRouter({
     routes
 })
 
+// 简单的登录态守卫：
+// - 未登录访问受保护路由 -> 重定向到 /login
+// - 已登录访问 /login -> 重定向到 /dashboard
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token')
+    if (!token && to.path !== '/login') return next('/login')
+    if (token && to.path === '/login') return next('/dashboard')
+    return next()
+})
+
 export default router

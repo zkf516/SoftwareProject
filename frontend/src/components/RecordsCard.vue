@@ -26,9 +26,11 @@ import { labRanges } from '../config/labRanges'
 
 export default {
 	name: 'RecordsCard',
+	props: {
+		records: { type: Array, default: () => [] }
+	},
 	data() {
 		return {
-			rows: this.loadRows(),
 			columns: [
 				{ key: 'date', label: '检查日期' },
 				{ key: 'ph', label: '酸碱度' },
@@ -70,46 +72,6 @@ export default {
 		}
 	},
 	methods: {
-		loadRows() {
-			// 预留从 localStorage 或 API 加载
-			try {
-				const s = localStorage.getItem('labRecords')
-				if (s) return JSON.parse(s)
-			} catch (_) {
-				// ignore
-			}
-			// 占位示例
-			const strip = (v) => typeof v === 'string' ? parseFloat(v.replace(/[^\d.\-]/g, '')) : v
-			return [
-				{
-					date: '2023-09-01',
-					ph: strip('12.5↑'), alb: 4.2, tp: 135, ibil: 210, dbil: 0.2, tbil: 1.4,
-					alp: 120, alt: 30, prealb: 15, tba: 5.5, lplt: 150, pcrit: 300, lpr: 1.5,
-					mpv: 10.0, pdw: 10.5, rdw_cv: 0.1, rdw_sd: 0.9, baso_abs: 0.3, eos_abs: 0.7,
-					mono_abs: 2.0, lymph_abs: 1.5, neut_abs: 3.0, baso_pct: 20, eos_pct: 25,
-					mono_pct: 0.25, lymph_pct: 35, neut_pct: 8.5, mchc: 5.0, mch: 14.0,
-					hct: 38.5, wbc: 4.6, platelet: 0.45, hgb: 38.5, mcv: 4.6, rbc: 0.45
-				},
-				{
-					date: '2023-08-25',
-					ph: 7.4, alb: 34.5, tp: 59.0, ibil: 1.0, dbil: 0.1, tbil: 1.2,
-					alp: 115, alt: 28, prealb: 16, tba: 5.0, lplt: 140, pcrit: 310, lpr: 1.3,
-					mpv: 9.5, pdw: 10.0, rdw_cv: 0.2, rdw_sd: 0.8, baso_abs: 0.4, eos_abs: 0.6,
-					mono_abs: 1.8, lymph_abs: 1.3, neut_abs: 2.8, baso_pct: 18, eos_pct: 22,
-					mono_pct: 0.23, lymph_pct: 33, neut_pct: 8.2, mchc: 4.8, mch: 13.5,
-					hct: 37.2, wbc: 4.7, platelet: 0.44, hgb: 38.5, mcv: 4.6, rbc: 0.45
-				},
-				{
-					date: '2023-08-18',
-					ph: strip('15.1↑'), alb: 3.9, tp: 142, ibil: strip('80↓'), dbil: 0.1, tbil: 1.2,
-					alp: 115, alt: 28, prealb: 16, tba: 5.0, lplt: 140, pcrit: 310, lpr: 1.3,
-					mpv: 9.5, pdw: 10.0, rdw_cv: 0.2, rdw_sd: 0.8, baso_abs: 0.4, eos_abs: 0.6,
-					mono_abs: 1.8, lymph_abs: 1.3, neut_abs: 2.8, baso_pct: 18, eos_pct: 22,
-					mono_pct: 0.23, lymph_pct: 33, neut_pct: 8.2, mchc: 4.8, mch: 13.5,
-					hct: 37.2, wbc: 4.7, platelet: 0.44, hgb: 38.5, mcv: 4.6, rbc: 0.45
-				}
-			]
-		},
 		// 判断异常类型：'' | 'high' | 'low'
 		abnormalType(name, val) {
 			const n = typeof val === 'number' ? val : parseFloat(val)
@@ -133,6 +95,11 @@ export default {
 			if (!t) return val
 			const arrow = t === 'high' ? '↑' : '↓'
 			return `${val}\u2009${arrow}`
+		}
+	},
+	computed: {
+		rows() {
+			return Array.isArray(this.records) ? this.records : []
 		}
 	}
 }

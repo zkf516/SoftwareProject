@@ -5,7 +5,7 @@ from utils.db_utils import excel_to_sqlite, query_sqlite
 import os
 import random
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 app = Flask(__name__)
@@ -17,7 +17,8 @@ JWT_ALG = 'HS256'
 JWT_EXPIRE_HOURS = 12
 
 def make_token(payload: dict, hours=JWT_EXPIRE_HOURS):
-    exp = datetime.utcnow() + timedelta(hours=hours)
+    # 使用时区感知的 UTC 时间，避免弃用警告
+    exp = datetime.now(timezone.utc) + timedelta(hours=hours)
     data = {**payload, 'exp': exp}
     return jwt.encode(data, JWT_SECRET, algorithm=JWT_ALG)
 
@@ -61,6 +62,9 @@ def init_db():
         excel_to_sqlite('disease.xlsx', 'patients')
         excel_to_sqlite('data.xlsx', 'records')
 
+
+# ===== API 接口 =====
+
 @app.route('/api/db/init', methods=['POST'])
 def db_init():
     excel_to_sqlite('disease.xlsx', 'patients')
@@ -79,8 +83,8 @@ def login():
         cardno = str(body.get('cardno', '')).strip()
         if not cardno:
             return jsonify({'error': '缺少卡号/住院号'}), 400
-        sql = f"SELECT CARDNO, 住院号 FROM patients WHERE CARDNO = '{cardno}' OR 住院号 = '{cardno}'"
-        data = query_sqlite(sql)
+        sql = "SELECT CARDNO, 住院号 FROM patients WHERE CARDNO = :id OR 住院号 = :id"
+        data = query_sqlite(sql, { 'id': cardno })
         if not data:
             return jsonify({'error': '卡号/住院号不存在'}), 400
         pid = data[0].get('CARDNO') or str(data[0].get('住院号'))
@@ -103,12 +107,13 @@ def login():
 @role_required('patient')
 def patient_me():
     pid = g.user.get('pid', '')
-    sql = f"SELECT * FROM patients WHERE CARDNO = '{pid}' OR 住院号 = '{pid}'"
-    data = query_sqlite(sql)
+    sql = "SELECT * FROM patients WHERE CARDNO = :pid OR 住院号 = :pid"
+    data = query_sqlite(sql, { 'pid': pid })
     if data:
         return jsonify(data[0])
     return jsonify({'error': '未找到该病人'}), 404
 
+# 测试接口
 # 医生随机获取一个病人
 @app.route('/api/patient/random', methods=['GET'])
 @auth_required
@@ -127,8 +132,8 @@ def random_patient():
 @role_required('doctor')
 def search_patient():
     keyword = request.args.get('keyword', '')
-    sql = f"SELECT * FROM patients WHERE 住院号 LIKE '%{keyword}%' OR CARDNO LIKE '%{keyword}%'"
-    data = query_sqlite(sql)
+    sql = "SELECT * FROM patients WHERE 住院号 LIKE :kw OR CARDNO LIKE :kw"
+    data = query_sqlite(sql, { 'kw': f"%{keyword}%" })
     return jsonify(data)
 
 # 兼容保留：不建议外部使用的“自查”接口（容易越权）
@@ -136,14 +141,42 @@ def search_patient():
 def self_patient():
     return jsonify({'error': '该接口已弃用，请使用 /api/patient/me 并携带令牌'}), 410
 
-# 查询病人所有检查记录（通过住院号）——医生权限
+# 查询病人所有检查记录（统一 SQL，按角色控制条件）
 @app.route('/api/patient/records', methods=['GET'])
 @auth_required
-@role_required('doctor')
+@role_required('doctor', 'patient')
 def patient_records():
-    patient_id = request.args.get('patient_id', '')
-    sql = f"SELECT * FROM records WHERE 住院号 = '{patient_id}'"
-    data = query_sqlite(sql)
+    role = g.user.get('role')
+    params = { 'role': role }
+
+    if role == 'patient':
+        # 病人忽略前端参数，仅用令牌 pid（可能是 CARDNO 或 住院号）
+        params['pid'] = g.user.get('pid', '')
+        params['target'] = None
+    else:
+        # 医生必须提供 patient_id（住院号）
+        patient_id = request.args.get('patient_id', '').strip()
+        if not patient_id:
+            return jsonify({'error': '缺少 patient_id'}), 400
+        params['target'] = patient_id
+        params['pid'] = ''
+
+    sql = """
+        SELECT r.*
+        FROM records r
+        WHERE (
+            :role = 'doctor' AND r.住院号 = :target
+        ) OR (
+            :role = 'patient' AND (
+                r.住院号 = :pid
+                OR EXISTS (
+                    SELECT 1 FROM patients p
+                    WHERE p.住院号 = r.住院号 AND p.CARDNO = :pid
+                )
+            )
+        )
+    """
+    data = query_sqlite(sql, params)
     return jsonify(data)
 
 if __name__ == '__main__':

@@ -8,13 +8,15 @@
 <script>
 export default {
   name: 'PatientNotesCard',
-  props: { patient: { type: Array, default: null } },
+  props: { patient: { type: Object, default: null } },
   computed: {
     // 原始脚本中似乎从 firstRow[23] 取备注（未完全确定），这里提供占位逻辑
     notes() {
-      // 优先从 localStorage 的某个键读取（如果你有定义的话），否则返回占位
-      const k = 'patientNotes'
-      try { const s = localStorage.getItem(k); if (s) return s } catch (_) {}
+      const p = this.patient
+      if (p && typeof p === 'object') {
+        const candidates = ['备注', 'notes', '体征', 'signs']
+        for (const k of candidates) { if (p[k]) return String(p[k]) }
+      }
       return '— 无备注 —'
     }
   }

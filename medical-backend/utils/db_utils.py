@@ -10,8 +10,15 @@ def excel_to_sqlite(excel_file, table_name, db_path='medical.db'):
     df.to_sql(table_name, engine, index=False, if_exists='replace')
     return True
 
-def query_sqlite(sql, db_path='medical.db'):
+def query_sqlite(sql, params=None, db_path='medical.db'):
+    """
+    执行只读查询，支持可选参数化（推荐传 params 防注入）。
+    返回字典列表。
+    """
     engine = create_engine(f'sqlite:///{db_path}')
     with engine.connect() as conn:
-        result = conn.execute(text(sql))
+        if params:
+            result = conn.execute(text(sql), params)
+        else:
+            result = conn.execute(text(sql))
         return [dict(row._mapping) for row in result]
