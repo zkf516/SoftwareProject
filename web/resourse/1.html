@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗系统登录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d1520;
+            --secondary: #1e2a38;
+            --accent: #00ffe0;
+            --text: #ccd6dd;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f2027, #2c5364, #203a43);
+            overflow: hidden;
+        }
+
+        /* 背景动画点 */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 224, 0.2) 10%, transparent 60%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.15) 5%, transparent 40%);
+            animation: bgMove 10s infinite alternate;
+        }
+
+        @keyframes bgMove {
+            from {
+                transform: translate(-10%, -10%);
+            }
+
+            to {
+                transform: translate(10%, 10%);
+            }
+        }
+
+        .login-card {
+            position: relative;
+            background: rgba(30, 42, 56, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 380px;
+            box-shadow: 0 0 40px rgba(0, 255, 224, 0.2);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Tab 栏 */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        /* 表单动画切换 */
+        .form {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 输入框 */
+        .input-group {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--secondary);
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #4A6572, #2F4353);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 20px rgba(74, 101, 114, 0.8);
+        }
+
+        .register-btn {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--accent);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .register-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <h2>医疗系统登录</h2>
+
+        <!-- Tab 切换 -->
+        <div class="tabs">
+            <div class="tab active" data-target="patientForm">病人</div>
+            <div class="tab" data-target="doctorForm">医生</div>
+        </div>
+
+        <!-- 病人表单 -->
+        <div class="form active" id="patientForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="patientName" placeholder="请输入姓名">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="patientId" placeholder="请输入住院号 / 卡号">
+            </div>
+            <button class="login-btn" onclick="login('patient')">登 录</button>
+        </div>
+
+        <!-- 医生表单 -->
+        <div class="form" id="doctorForm">
+            <div class="input-group">
+                <i class="fas fa-user-md"></i>
+                <input type="text" id="doctorName" placeholder="请输入姓名">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-phone"></i>
+                <input type="text" id="doctorPhone" placeholder="请输入手机号">
+            </div>
+            <button class="login-btn" onclick="login('doctor')">登 录</button>
+        </div>
+
+        <!-- 注册按钮 -->
+        <a href="#" class="register-btn">没有账号？立即注册</a>
+    </div>
+
+    <script>
+        // Tab 切换逻辑
+        const tabs = document.querySelectorAll('.tab');
+        const forms = document.querySelectorAll('.form');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                forms.forEach(f => f.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        function login(role) {
+            if (role === 'patient') {
+                const name = document.getElementById('patientName').value;
+                const id = document.getElementById('patientId').value;
+                alert(`病人登录\n姓名: ${name}\n住院号/卡号: ${id}`);
+            } else {
+                const name = document.getElementById('doctorName').value;
+                const phone = document.getElementById('doctorPhone').value;
+                alert(`医生登录\n姓名: ${name}\n手机号: ${phone}`);
+            }
+        }
+    </script>
+</body>
+
+</html>
