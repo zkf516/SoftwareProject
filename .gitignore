@@ -20,13 +20,13 @@ lerna-debug.log*
 .env
 .env.*
 !.env.example
-frontend/.env
-frontend/.env.*
-docs/.env
-docs/.env.*
-docs/server/.env
-docs/server/.env.*
-medical-backend/.env
+PMLM-frontend/.env
+PMLM-frontend/.env.*
+web/docs/.env
+web/docs/.env.*
+web/docs/server/.env
+web/docs/server/.env.*
+PMLM-backend/.env
 
 # --- Node / Vite / Vue ---
 node_modules/
@@ -45,6 +45,9 @@ coverage/
 .cache-loader/
 .npm/
 .pnpm-store/
+
+web/docs/node_modules/
+web/docs/dist/
 
 # --- Python ---
 **/__pycache__/
@@ -72,16 +75,26 @@ htmlcov/
 .pyre/
 .ruff_cache/
 
+PMLM-backend/__pycache__/
+PMLM-backend/*.py[cod]
+
 # --- Notebooks ---
 .ipynb_checkpoints/
+
+PMLM-model/**/*.ipynb_checkpoints/
 
 # --- Databases / local artifacts ---
 *.db
 *.sqlite
 *.sqlite3
-medical-backend/medical.db
+PMLM-backend/medical.db
 
 # --- Temp ---
 temp/
 tmp/
 *.local
+
+web/docs/temp/
+web/docs/tmp/
+
+PMLM-model/
