@@ -1,0 +1,12 @@
+{
+  "appId": "com.pmlm.app",
+  "appName": "pmlm",
+  "webDir": "dist",
+  "server": {
+      "androidScheme": "http",
+      "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

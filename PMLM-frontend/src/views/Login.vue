@@ -1,11 +1,29 @@
 <template>
   <div class="login-page">
-    <div class="login-container">
-      <LoginCard @register="onRegister" @patient-submit="onPatientSubmit" @doctor-submit="onDoctorSubmit" />
-      <div v-if="busy" class="overlay">
-        <div class="spinner" />
-        <div class="msg">{{ busyMessage }}</div>
+    <!-- 分屏布局：左侧粒子区域(自适应剩余空间)，右侧固定宽度登录区 -->
+    <div class="flex w-full min-h-screen">
+      <!-- 左侧：仅展示粒子特效，保持原粒子图自身尺寸，不放大 -->
+      <div class="flex flex-col flex-1 items-center justify-center relative px-1">
+        <ParticleImage
+          image-src="/og-image.png"
+          :responsive-width="true"
+          particle-size="4"
+          particle-gap="1"
+        />
       </div>
+
+      <!-- 右侧：登录功能面板，保持卡片最大宽 450px，不改变原样 -->
+      <div class="login-container !min-h-screen w-full max-w-[560px] flex flex-col items-center justify-center px-8 mr-15">
+        <LoginCard @register="onRegister" @patient-submit="onPatientSubmit" @doctor-submit="onDoctorSubmit" />
+        <div class="z-10 flex h-40 w-full flex-col items-center justify-center">
+          <GradientButton :bg-color="bgColor" @click="goHome">Zooooooooooom 🚀</GradientButton>
+        </div>
+      </div>
+    </div>
+    <!-- 全屏遮罩放在最外层，覆盖左右两侧 -->
+    <div v-if="busy" class="overlay">
+      <div class="spinner" />
+      <div class="msg">{{ busyMessage }}</div>
     </div>
   </div>
 </template>
@@ -14,20 +32,35 @@
 import LoginCard from '../components/LoginCard.vue'
 import { usePatientStore } from '../stores/patient'
 import { useRecordsStore } from '../stores/records'
+import FlipCard from '../components/InspiraUI/FlipCard.vue'
+import GradientButton from '../components/InspiraUI/GradientButton.vue'
+import ParticleImage from "@/components/ui/particle-image/ParticleImage.vue";
+
+import { computed } from "vue";
+import { useColorMode } from "@vueuse/core";
+
+
 
 export default {
   name: 'LoginPage',
-  components: { LoginCard },
+  components: { LoginCard, FlipCard, GradientButton, ParticleImage },
   data() {
+    //const isDark = computed(() => useColorMode().value == "dark");
+    //const bgColor = computed(() => (isDark.value ? "#000" : "#fff"));
     return {
       busy: false,
-      busyMessage: ''
+      busyMessage: '',
+      //bgColor
     }
   },
   methods: {
     // 跳转注册页面
     onRegister() {
       this.$router.push('/register')
+    },
+
+    goHome() {
+      this.$router.push('/home')
     },
 
     // 处理病人登录
@@ -38,7 +71,8 @@ export default {
         // 先清空全局状态，避免连续登录残留数据
         try { usePatientStore().clear() } catch (_) {}
         try { useRecordsStore().clear() } catch (_) {}
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+        const API_BASE = import.meta.env.VITE_API_BASE
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // LoginCard 发出的字段为 { name, number }，后端期望 cardno，这里做字段映射
@@ -72,7 +106,8 @@ export default {
         // 清空全局状态，避免连续登录数据残留
         try { usePatientStore().clear() } catch (_) {}
         try { useRecordsStore().clear() } catch (_) {}
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+  const API_BASE = import.meta.env.VITE_API_BASE
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // LoginCard 发出的字段为 { name, phone }，后端期望 username/password，这里做字段映射
@@ -91,13 +126,29 @@ export default {
         this.busyMessage = ''
       }
     },
-  },
-  mounted() {},
-  beforeUnmount() {}
+    
+    mounted() {},
+    beforeUnmount() {}
+  }
 }
 </script>
 
 <style scoped>
+
+.to-home-btn {
+  margin-top: 32px;
+  padding: 10px 32px;
+  background: var(--accent, #1e88e5);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.to-home-btn:hover {
+  background: #1565c0;
+}
 
 .login-page {
   position: relative;
@@ -106,36 +157,9 @@ export default {
   color: var(--text);
 }
 
-/* 基础重置限定在页面容器内，避免污染全局 */
-.login-page, .login-page * {
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* 粒子与背景已迁移到全局 App.vue */
-
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 20px;
-  z-index: 1;
-  min-height: 100vh;
-}
-
-/* 限制卡片最大宽度与与原设计一致 */
-.login-container :deep(.login-card) {
-  width: 100%;
-  max-width: 450px;
-}
-
-/* 统一字体与行高，避免不同环境导致高度差 */
-.login-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.5;
-}
+/* 右侧登录区域容器内字体与布局 */
+.login-container :deep(.login-card) { width:100%; max-width:520px; }
+.login-container { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.5; }
 
 /* 提交后的全屏遮罩与进度提示 */
 .overlay {

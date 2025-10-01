@@ -4,12 +4,14 @@ import Dashboard from '../views/Dashboard.vue'
 import Chat from '../views/Chat.vue'
 import Records from '../views/Records.vue'
 
+import Home from '../views/Home.vue'
 const routes = [
     { path: '/', redirect: '/login' },
     { path: '/login', name: 'login', component: Login },
     { path: '/dashboard', name: 'dashboard', component: Dashboard },
     { path: '/chat', name: 'chat', component: Chat },
-    { path: '/records', name: 'records', component: Records }
+    { path: '/records', name: 'records', component: Records },
+    { path: '/home', name: 'home', component: Home }
 ]
 
 const router = createRouter({
@@ -22,7 +24,8 @@ const router = createRouter({
 // - 已登录访问 /login -> 重定向到 /dashboard
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
-    if (!token && to.path !== '/login') return next('/login')
+    // 允许 /login 和 /home 免登录访问
+    if (!token && to.path !== '/login' && to.path !== '/home') return next('/login')
     if (token && to.path === '/login') return next('/dashboard')
     return next()
 })

@@ -10,10 +10,10 @@
       />
     </div>
     <div class="right-top">
-  <PatientStatsCard :patient="patient" />
+      <PatientStatsCard :patient="patient" />
     </div>
     <div class="right-bottom">
-  <PatientNotesCard :patient="patient" />
+      <PatientNotesCard :patient="patient" />
     </div>
   </div>
 </template>

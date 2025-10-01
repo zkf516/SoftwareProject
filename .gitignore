@@ -98,3 +98,46 @@ web/docs/temp/
 web/docs/tmp/
 
 PMLM-model/
+
+# === Android / Capacitor (added) ===
+PMLM-frontend/android/.gradle/
+PMLM-frontend/android/.cxx/
+PMLM-frontend/android/local.properties
+PMLM-frontend/android/**/build/
+PMLM-frontend/android/**/captures/
+PMLM-frontend/android/**/outputs/
+*.apk
+*.ap_ 
+*.aab
+*.keystore
+*.jks
+*.mapping
+
+# Capacitor iOS (in case added later)
+ios/
+PMLM-frontend/ios/
+PMLM-frontend/ios/App/App/public/build/
+
+# === Frontend build meta ===
+*.tsbuildinfo
+.turbo/
+.nx/
+
+# === Misc tooling ===
+.DS_Store?
+*.swp
+*.swo
+*.orig
+
+# === Security / certs (optional artifacts) ===
+*.pem
+*.p12
+*.crt
+*.key
+
+# === Coverage (already covered, add variants) ===
+lcov-report/
+
+# === Temp editor backups ===
+*~
+.#*

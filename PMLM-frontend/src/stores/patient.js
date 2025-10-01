@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 
+const API_BASE = import.meta.env.VITE_API_BASE
+
 export const usePatientStore = defineStore('patient', {
     state: () => ({
         patient: null,
@@ -13,7 +15,7 @@ export const usePatientStore = defineStore('patient', {
                 this.loading = true
                 this.error = null
                 const token = localStorage.getItem('token')
-                const res = await fetch('http://localhost:3000/api/patient/me', {
+                const res = await fetch(`${API_BASE}/api/patient/me`, {
                     headers: { Authorization: token ? `Bearer ${token}` : '' }
                 })
                 const data = await res.json()

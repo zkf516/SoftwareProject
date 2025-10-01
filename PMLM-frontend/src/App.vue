@@ -65,7 +65,7 @@ export default {
           color: { value: '#ffffff' },
           shape: { type: 'circle' },
           opacity: {
-            value: 0.2,
+            value: 0.4,
             random: true,
             anim: { enable: false, speed: 0, opacity_min: 0.1, sync: false }
           },
@@ -78,7 +78,7 @@ export default {
             enable: true,
             distance: 150,
             color: '#1E88E5',
-            opacity: 0.1,
+            opacity: 0.2,
             width: 1
           },
           move: {

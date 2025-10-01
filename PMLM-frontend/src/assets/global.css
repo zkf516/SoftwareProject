@@ -1,3 +1,9 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+
 /* Global theme variables */
 :root {
     --primary: #1E88E5;

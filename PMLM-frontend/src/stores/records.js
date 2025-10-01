@@ -1,5 +1,8 @@
+
 import { defineStore } from 'pinia'
 import { usePatientStore } from './patient'
+
+const API_BASE = import.meta.env.VITE_API_BASE
 
 export const useRecordsStore = defineStore('records', {
     state: () => ({
@@ -12,12 +15,12 @@ export const useRecordsStore = defineStore('records', {
     actions: {
         async fetchMine(force = false) {
             if (this.lastLoadedKey === 'self' && !force && this.records?.length) return
-            await this._doFetch('http://localhost:3000/api/patient/records', 'self')
+            await this._doFetch(`${API_BASE}/api/patient/records`, 'self')
         },
         async fetchByInNo(inNo, force = false) {
             if (!inNo) { this.error = '缺少住院号'; return }
             if (this.lastLoadedKey === inNo && !force && this.records?.length) return
-            const url = `http://localhost:3000/api/patient/records?patient_id=${encodeURIComponent(inNo)}`
+            const url = `${API_BASE}/api/patient/records?patient_id=${encodeURIComponent(inNo)}`
             await this._doFetch(url, inNo)
         },
         async fetchForCurrent(force = false) {
