@@ -22,12 +22,12 @@ const router = createRouter({
 // 简单的登录态守卫：
 // - 未登录访问受保护路由 -> 重定向到 /login
 // - 已登录访问 /login -> 重定向到 /dashboard
-router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token')
-    // 允许 /login 和 /home 免登录访问
-    if (!token && to.path !== '/login' && to.path !== '/home') return next('/login')
-    if (token && to.path === '/login') return next('/dashboard')
-    return next()
-})
+// router.beforeEach((to, from, next) => {
+//     const token = localStorage.getItem('token')
+//     // 允许 /login 和 /home 免登录访问
+//     if (!token && to.path !== '/login' && to.path !== '/home') return next('/login')
+//     if (token && to.path === '/login') return next('/dashboard')
+//     return next()
+// })
 
 export default router

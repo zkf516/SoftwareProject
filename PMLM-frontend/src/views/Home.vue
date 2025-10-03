@@ -9,26 +9,23 @@
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <img :src="userAvatar" alt="avatar" class="w-9 h-9 rounded-full ring-2 ring-white/10 object-cover bg-gray-700" />
+        <!-- 蓝色头像替换 -->
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold ring-2 ring-blue-300/40 shadow">
+          {{ initials }}
+        </div>
         <div class="hidden sm:flex flex-col leading-tight min-w-0">
           <span class="text-white text-sm font-semibold truncate max-w-[120px]">{{ userName || '未登录' }}</span>
           <span class="text-[10px] text-slate-400 tracking-wide">编号 {{ patientId || '--' }}</span>
         </div>
       </div>
-      <!-- 中间：导航栏（绝对居中） -->
-      <nav class="absolute left-1/2 -translate-x-1/2 flex gap-2">
-        <button
-          v-for="item in navItems"
-          :key="item.key"
-          @click="goNav(item)"
-          :class="[
-            'px-3 py-1.5 rounded-md text-sm font-medium transition',
-            currentPath === item.to ? 'bg-white/15 text-white backdrop-blur' : 'text-slate-300 hover:bg-white/10'
-          ]"
-        >
-          {{ item.label }}
-        </button>
-      </nav>
+      <!-- 中间：MorphingTabs 导航（绝对居中） -->
+      <div class="absolute left-1/2 -translate-x-1/2">
+        <MorphingTabs
+          :tabs="tabs"
+          :active-tab="activeTab"
+          @update:active-tab="activeTab = $event"
+        />
+      </div>
     </div>
   </header>
 
@@ -97,11 +94,11 @@
         <FlipCard>
           <template #default>
             <img src="https://images.unsplash.com/photo-1525373698358-041e3a460346?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="image" class="size-full rounded-2xl object-cover shadow-2xl shadow-black/40 w-full md:w-56" />
-            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">卡片一</div>
+            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">病历信息</div>
           </template>
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-56">
-              <h1 class="text-xl font-bold text-white">卡片一</h1>
+              <h1 class="text-xl font-bold text-white">病历信息</h1>
               <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容一：病人健康数据展示。</p>
             </div>
           </template>
@@ -109,11 +106,11 @@
         <FlipCard>
           <template #default>
             <img src="https://images.unsplash.com/photo-1525373698358-041e3a460346?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="image" class="size-full rounded-2xl object-cover shadow-2xl shadow-black/40 w-full md:w-56" />
-            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">卡片二</div>
+            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">检测记录</div>
           </template>
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-56">
-              <h1 class="text-xl font-bold text-white">卡片二</h1>
+              <h1 class="text-xl font-bold text-white">检测记录</h1>
               <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容二：用药记录与提醒。</p>
             </div>
           </template>
@@ -121,11 +118,11 @@
         <FlipCard>
           <template #default>
             <img src="https://images.unsplash.com/photo-1525373698358-041e3a460346?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="image" class="size-full rounded-2xl object-cover shadow-2xl shadow-black/40 w-full md:w-56" />
-            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">卡片三</div>
+            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">AI咨询</div>
           </template>
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-56">
-              <h1 class="text-xl font-bold text-white">卡片三</h1>
+              <h1 class="text-xl font-bold text-white">AI咨询</h1>
               <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容三：随访与健康建议。</p>
             </div>
           </template>
@@ -133,11 +130,11 @@
         <FlipCard>
           <template #default>
             <img src="https://images.unsplash.com/photo-1525373698358-041e3a460346?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="image" class="size-full rounded-2xl object-cover shadow-2xl shadow-black/40 w-full md:w-56" />
-            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">卡片四</div>
+            <div class="absolute bottom-4 left-4 text-xl font-bold text-white">其他功能</div>
           </template>
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-56">
-              <h1 class="text-xl font-bold text-white">卡片四</h1>
+              <h1 class="text-xl font-bold text-white">其他功能</h1>
               <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容四：历史就诊记录。</p>
             </div>
           </template>
@@ -150,29 +147,33 @@
 <script>
 import FlipCard from '../components/InspiraUI/FlipCard.vue'
 import Meteors from "@/components/ui/meteors/Meteors.vue";
+import MorphingTabs from "@/components/ui/morphing-tabs/MorphingTabs.vue";
 
 export default {
   name: 'Home',
-  components: { FlipCard, Meteors },
+  components: { FlipCard, Meteors, MorphingTabs },
   data() {
     return {
       userName: '',
       patientId: '',
-      navItems: [
-        { key: 'home', label: '首页', to: '/' },
-        { key: 'records', label: '记录', to: '/records' },
-        { key: 'chat', label: '咨询', to: '/chat' },
-        { key: 'dashboard', label: '面板', to: '/dashboard' }
-      ]
+      tabs: ['首页','记录','咨询','面板'],
+      activeTab: '首页',
+      tabRouteMap: {
+        '首页': '/',
+        '记录': '/records',
+        '咨询': '/chat',
+        '面板': '/dashboard'
+      }
     }
   },
   computed: {
     currentPath() {
       return this.$route ? this.$route.path : ''
     },
-    userAvatar() {
-      const seed = this.userName || 'User';
-      return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(seed)}`;
+    initials() {
+      const name = (this.userName || 'U').trim();
+      // 取前两个字符（兼容中文或英文），中文直接显示一个/两个汉字
+      return name.slice(0,2).toUpperCase();
     }
   },
   mounted() {
@@ -183,6 +184,18 @@ export default {
         this.patientId = cached[2] || '';
       }
     } catch (e) { /* ignore */ }
+    // 根据当前路由初始化 activeTab
+    const path = this.$route ? this.$route.path : '/';
+    for (const [tab, route] of Object.entries(this.tabRouteMap)) {
+      if (route === path) { this.activeTab = tab; break; }
+    }
+  },
+  watch: {
+    '$route.path'(val) {
+      for (const [tab, route] of Object.entries(this.tabRouteMap)) {
+        if (route === val) { this.activeTab = tab; break; }
+      }
+    }
   },
   methods: {
     handleBack() {
@@ -192,9 +205,11 @@ export default {
         this.$router.push('/');
       }
     },
-    goNav(item) {
-      if (this.$router && item.to) {
-        this.$router.push(item.to);
+    handleTabChange(tab) {
+      this.activeTab = tab;
+      const target = this.tabRouteMap[tab];
+      if (this.$router && target && this.$route.path !== target) {
+        this.$router.push(target);
       }
     }
   }
