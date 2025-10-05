@@ -10,7 +10,7 @@
     >
       <!-- Front -->
       <div
-        class="absolute size-full overflow-hidden rounded-2xl [backface-visibility:hidden]"
+        class="absolute size-full overflow-hidden rounded-2xl border border-gray-700 [backface-visibility:hidden]"
       >
         <slot />
       </div>
@@ -19,7 +19,8 @@
       <div
         :class="
           cn(
-            'absolute h-full w-full overflow-hidden rounded-2xl bg-black/80 p-4 text-slate-200 [backface-visibility:hidden]',
+            'absolute h-full w-full overflow-hidden rounded-2xl [backface-visibility:hidden]',
+            props.backClass,
             rotation[1],
           )
         "
@@ -37,10 +38,12 @@ import { computed } from 'vue';
 interface FlipCardProps {
   rotate?: "x" | "y";
   class?: string;
+  backClass?: string;
 }
 
 const props = withDefaults(defineProps<FlipCardProps>(), {
   rotate: "y",
+  backClass: "bg-black/80 p-4 text-slate-200",
 });
 const rotationClass = {
   x: ["group-hover:[transform:rotateX(180deg)]", "[transform:rotateX(180deg)]"],

@@ -13,10 +13,16 @@
     --dark-bg: #121C2B;
     --card-bg: rgba(30, 40, 60, 0.8);
     --input-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: #93C5FD;
 
-    
+    --border: oklch(0.92 0.004 286.32);
     --background: oklch(1 0 0);
     --radius: 0.625rem;
+}
+
+
+.dark {
+    --border: oklch(0.274 0.006 286.033);
 }
 
 /* Layout sane defaults */
@@ -268,6 +274,8 @@ i[class*=" fa-"] {
     --color-input: var(--input);
     --color-ring: var(--ring);
     --color-card-bg: var(--card-bg);
+    --color-dark-bg: var(--dark-bg);
+    --color-button-bg: var(--button-bg);
 
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);

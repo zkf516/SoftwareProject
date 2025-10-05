@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Transparent background -->
+  <rect width="256" height="256" fill="transparent"/>
+  <!-- Simple AI glyph: circuit brain -->
+  <circle cx="128" cy="128" r="72" stroke="#60A5FA" stroke-width="8" fill="none"/>
+  <path d="M96 112h64M96 144h64" stroke="#93C5FD" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="96" cy="112" r="6" fill="#60A5FA"/>
+  <circle cx="160" cy="112" r="6" fill="#60A5FA"/>
+  <circle cx="112" cy="144" r="6" fill="#60A5FA"/>
+  <circle cx="144" cy="144" r="6" fill="#60A5FA"/>
+  <!-- AI letters -->
+  <path d="M90 178l14-40 14 40M102 146h4" stroke="#E5E7EB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M146 178v-40M162 138v40" stroke="#E5E7EB" stroke-width="6" stroke-linecap="round"/>
+</svg>
