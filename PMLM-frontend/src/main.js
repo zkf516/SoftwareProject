@@ -3,10 +3,14 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+import MateChat from '@matechat/core';
+
 // global styles
 import './assets/global.css'
+import '@devui-design/icons/icomoon/devui-icon.css';
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+app.use(MateChat)
 app.mount('#app')

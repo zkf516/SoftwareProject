@@ -3,14 +3,17 @@
     <div id="particles-js"></div>
     <div class="background-overlay"></div>
   </div>
-  <div class="app-content">
+  <TopBar />
+  <div class="app-content pt-15">
     <router-view />
   </div>
 </template>
 
 <script>
+import TopBar from './components/layout/TopBar.vue'
 export default {
   name: 'App',
+  components: { TopBar },
   methods: {
     // 按顺序尝试加载多个脚本，任一成功即回调
     loadScript(urls, onload) {

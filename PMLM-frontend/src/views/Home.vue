@@ -1,35 +1,5 @@
 <template>
-  <!-- 顶部透明状态栏 -->
-  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-gray-900/30 border-b border-gray-700/40">
-    <div class="relative mx-auto max-w-4xl grid grid-cols-[1fr_auto_1fr] items-center h-14 px-0"> <!-- 三段：左头像，中间菜单，右按钮 -->
-      <!-- 左：头像 + 信息 -->
-      <div class="flex items-center gap-3 justify-self-start">
-        <div class="w-9 h-9 rounded-full bg-button-bg flex items-center justify-center text-white text-sm font-semibold ring-2 ring-blue-300/40 shadow">
-          {{ initials }}
-        </div>
-        <div class="hidden sm:flex flex-col leading-tight min-w-0">
-          <span class="text-white text-sm font-semibold truncate max-w-[120px]">{{ userName || '未登录' }}</span>
-          <span class="text-[10px] text-slate-400 tracking-wide">编号 {{ patientId || '--' }}</span>
-        </div>
-      </div>
-
-      <!-- 中：切换菜单（居中） -->
-      <div class="justify-self-center">
-        <MorphingTabs
-          :tabs="tabs"
-          :active-tab="activeTab"
-          @update:active-tab="activeTab = $event"
-        />
-      </div>
-
-      <!-- 右：按钮（末端） -->
-      <div class="flex items-center justify-self-end">
-        <InteractiveHoverButton text="返回" hover-text-color="rgba(30, 40, 60, 0.8)" @click="handleBack" aria-label="返回"/>
-      </div>
-    </div>
-  </header>
-
-  <div class="pt-15"> <!-- 主体内容增加顶部间距避免被固定栏遮挡 -->
+  <div>
     <!-- 病人信息卡片区块，流星特效参考原InspiraUI布局优化 -->
     <div class="relative w-full max-w-4xl mx-auto my-6 flex justify-center">
       <div class="absolute inset-0 scale-95 rounded-2xl bg-gray-800 blur-2xl opacity-40"></div>
@@ -121,7 +91,9 @@
         </FlipCard>
   <FlipCard back-class="bg-[#0f172a]/95 p-4 text-slate-200">
           <template #default>
-            <div class="size-full rounded-2xl bg-[#0f172a]/90 flex items-center justify-center shadow-2xl shadow-black/40">
+            <div class="size-full rounded-2xl bg-[#0f172a]/90 flex items-center justify-center shadow-2xl shadow-black/40 cursor-pointer hover:ring-2 ring-blue-400/40 transition"
+                 @click="goToConsult" role="button" aria-label="前往 AI 咨询" tabindex="0"
+                 @keydown.enter.prevent="goToConsult" @keydown.space.prevent="goToConsult">
               <img src="/icons/AI咨询.svg" alt="AI 咨询" class="w-24 h-24 opacity-90" />
               <div class="absolute bottom-4 left-4 text-xl font-bold text-white">AI 咨询</div>
             </div>
@@ -130,6 +102,8 @@
             <div class="flex min-h-full flex-col gap-2 w-full md:w-44">
               <h1 class="text-xl font-bold text-white">AI咨询</h1>
               <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容三：随访与健康建议。</p>
+              <button class="mt-2 rounded-md border border-gray-600 px-3 py-1.5 text-sm text-white/90 hover:bg-gray-800"
+                      @click.stop="goToConsult">进入咨询</button>
             </div>
           </template>
         </FlipCard>
@@ -160,25 +134,14 @@ import InteractiveHoverButton from "@/components/ui/interactive-hover-button/Int
 
 export default {
   name: 'Home',
-  components: { FlipCard, Meteors, MorphingTabs, InteractiveHoverButton },
+  components: { FlipCard, Meteors },
   data() {
     return {
       userName: '',
-      patientId: '',
-      tabs: ['首页','记录','咨询','面板'],
-      activeTab: '首页',
-      tabRouteMap: {
-        '首页': '/',
-        '记录': '/records',
-        '咨询': '/chat',
-        '面板': '/dashboard'
-      }
+      patientId: ''
     }
   },
   computed: {
-    currentPath() {
-      return this.$route ? this.$route.path : ''
-    },
     initials() {
       const name = (this.userName || 'U').trim();
       // 取前两个字符（兼容中文或英文），中文直接显示一个/两个汉字
@@ -193,18 +156,6 @@ export default {
         this.patientId = cached[2] || '';
       }
     } catch (e) { /* ignore */ }
-    // 根据当前路由初始化 activeTab
-    const path = this.$route ? this.$route.path : '/';
-    for (const [tab, route] of Object.entries(this.tabRouteMap)) {
-      if (route === path) { this.activeTab = tab; break; }
-    }
-  },
-  watch: {
-    '$route.path'(val) {
-      for (const [tab, route] of Object.entries(this.tabRouteMap)) {
-        if (route === val) { this.activeTab = tab; break; }
-      }
-    }
   },
   methods: {
     handleBack() {
@@ -214,11 +165,11 @@ export default {
         this.$router.push('/');
       }
     },
-    handleTabChange(tab) {
-      this.activeTab = tab;
-      const target = this.tabRouteMap[tab];
-      if (this.$router && target && this.$route.path !== target) {
-        this.$router.push(target);
+    goToConsult() {
+      if (this.$router) {
+        this.$router.push('/aichat')
+      } else {
+        window.location.href = '/aichat'
       }
     }
   }
