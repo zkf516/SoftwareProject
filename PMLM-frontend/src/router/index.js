@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
-import Dashboard from '../views/Dashboard.vue'
-import Chat from '../views/Chat.vue'
-import Records from '../views/Records.vue'
-import AIChat from '../views/AIChat.vue'
+import Login from '@/views/Login.vue'
+import Dashboard from '@/views/Dashboard.vue'
+import Chat from '@/views/Chat.vue'
+import Records from '@/views/Records.vue'
+import AIChat from '@/views/AIChat.vue'
+import Home from '@/views/Home.vue'
 
-import Home from '../views/Home.vue'
 const routes = [
     { path: '/', redirect: '/login' },
-    { path: '/login', name: 'login', component: Login },
+    { path: '/login', name: 'login', component: Login, meta: { hideTopBar: true } },
     { path: '/dashboard', name: 'dashboard', component: Dashboard },
     { path: '/chat', name: 'chat', component: Chat },
     { path: '/records', name: 'records', component: Records },

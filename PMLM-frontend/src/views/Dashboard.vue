@@ -22,7 +22,7 @@
 import PatientInfoCard from '../components/PatientInfoCard.vue'
 import PatientStatsCard from '../components/PatientStatsCard.vue'
 import PatientNotesCard from '../components/PatientNotesCard.vue'
-import { usePatientStore } from '../stores/patient'
+import { usePatientStore } from '../store/patient'
 
 export default {
   name: 'DashboardPage',

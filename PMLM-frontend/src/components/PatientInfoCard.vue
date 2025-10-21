@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import { usePatientStore } from '../stores/patient'
-import { useRecordsStore } from '../stores/records'
+import { usePatientStore } from '../store/patient'
+import { useRecordsStore } from '../store/records'
 export default {
   name: 'PatientInfoCard',
   props: {

@@ -30,8 +30,8 @@
 
 <script>
 import LoginCard from '../components/LoginCard.vue'
-import { usePatientStore } from '../stores/patient'
-import { useRecordsStore } from '../stores/records'
+import { usePatientStore } from '../store/patient'
+import { useRecordsStore } from '../store/records'
 import FlipCard from '../components/InspiraUI/FlipCard.vue'
 import GradientButton from '../components/InspiraUI/GradientButton.vue'
 import ParticleImage from "@/components/ui/particle-image/ParticleImage.vue";

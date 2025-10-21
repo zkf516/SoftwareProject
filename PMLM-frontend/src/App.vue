@@ -3,8 +3,8 @@
     <div id="particles-js"></div>
     <div class="background-overlay"></div>
   </div>
-  <TopBar />
-  <div class="app-content pt-15">
+  <TopBar v-if="!$route.meta?.hideTopBar" />
+  <div class="app-content" :class="{ 'pt-15': !$route.meta?.hideTopBar }">
     <router-view />
   </div>
 </template>
@@ -14,6 +14,9 @@ import TopBar from './components/layout/TopBar.vue'
 export default {
   name: 'App',
   components: { TopBar },
+  computed: {
+    // 可扩展更多全局布局逻辑
+  },
   methods: {
     // 按顺序尝试加载多个脚本，任一成功即回调
     loadScript(urls, onload) {

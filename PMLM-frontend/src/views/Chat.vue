@@ -17,7 +17,7 @@
 <script>
 import PatientInfoCard from '../components/PatientInfoCard.vue'
 import ChatCard from '../components/ChatCard.vue'
-import { usePatientStore } from '../stores/patient'
+import { usePatientStore } from '../store/patient'
 
 export default {
   name: 'ChatPage',
