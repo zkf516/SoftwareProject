@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">pmlm</string>
-    <string name="title_activity_main">pmlm</string>
-    <string name="package_name">com.pmlm.app</string>
-    <string name="custom_url_scheme">com.pmlm.app</string>
-</resources>

@@ -1,146 +1,81 @@
 <template>
-  <div class="mx-auto px-4 py-5 max-w-6xl">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
-      <div class="md:col-span-1">
-        <ChatHistory
-          :items="historyItems"
-          :selected-id="selectedId"
-          @select="onSelectHistory"
-          @new="onNewChat"
-        />
-      </div>
-      <div class="md:col-span-3 card aichat-card">
-      <McLayout class="aichat-layout">
-        <McLayoutHeader class="aichat-header">
-          <McHeader :logoImg="'/logo.svg'" :title="'MateChat'" />
-        </McLayoutHeader>
-        <McLayoutContent class="aichat-content">
-          <McBubble content="Hello MateChat" align="right"/>
-          <McBubble content="Hello, what can I do for you?" />
-        </McLayoutContent>
-        <McLayoutSender class="aichat-sender">
-          <McInput
-            :value="inputValue"
-            @update:value="onInput"
-            :maxLength="2000"
-            showCount
-            placeholder="请输入消息…"
-          >
-            <template #head>
-              <div class="appendix-wrap">
-                <div class="appendix-item">
-                  <span>README.md</span>
-                  <i class="icon-code-editor-close"></i>
-                </div>
-              </div>
-            </template>
-            <template #extra>
-              <div class="input-foot-left">
-                <span><i class="icon-at"></i>智能体</span>
-                <span><i class="icon-appendix"></i>附件</span>
-              </div>
-            </template>
-          </McInput>
-        </McLayoutSender>
-      </McLayout>
-      </div>
+  <div class="min-h-[93vh] flex items-center justify-center my-2">
+    <div ref="rootEl" class="aichat-root bg-gray-900/60 w-4/5 max-h-[90vh] h-[90vh] flex flex-col rounded-2xl border border-gray-700">
+      <Layout :class="['flex-1 overflow-auto flex flex-col', displayShape]">
+        <template #header>
+          <NavBar v-if="displayShape === DisplayShape.Immersive" />
+        </template>
+        <template #content>
+          <template v-if="displayShape === DisplayShape.Immersive">
+            <HistoryList />
+          </template>
+          <ChatView />
+        </template>
+      </Layout>
     </div>
   </div>
-  
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { McLayoutAside, McLayoutContent, McLayoutHeader, McLayout, McLayoutSender } from '@matechat/core';
-import ChatHistory from '@/components/ChatHistory.vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import GlobalConfig from '@/global-config';
+import { DisplayShape } from '@/global-config-types';
+import { ChatView } from '@view/chat-view';
+import { HistoryList } from '@view/history';
+import { Layout } from '@view/layout';
+import { LangType } from '@/types';
+import { NavBar } from '@view/navbar';
 
-defineOptions({ name: 'AIChat' })
 
-const router = useRouter()
+const displayShape = GlobalConfig.displayShape;
 
-const userName = ref('')
-const patientId = ref('')
-const inputValue = ref('')
-const selectedId = ref(null)
-const historyItems = ref([
-  { id: 1, title: 'Tailwind Classes', date: '12 Mar' },
-  { id: 2, title: 'explain quantum computing', date: '10 Feb' },
-  { id: 3, title: 'How to create ERP Diagram', date: '22 Jan' },
-  { id: 4, title: 'API Scaling Strategies', date: '1 Jan' },
-  { id: 5, title: 'What is GPT UI?', date: '1 Jan' },
-  { id: 6, title: 'How to use Tailwind components?', date: '1 Jan' },
-])
-
-const initials = computed(() => {
-  const name = (userName.value || 'U').trim()
-  return name.slice(0, 2).toUpperCase()
+// 仅在本组件生效的 i18n（不继承全局）
+const { t, locale } = useI18n({
+  useScope: 'local',
+  inheritLocale: false,
+  locale: GlobalConfig.language === LangType.EN ? 'en-us' : 'zh-cn'
 })
 
-function handleBack() {
-  if (window.history.length > 1) {
-    window.history.back()
-  } else if (router) {
-    router.push('/home')
+// 仅在本组件根容器上应用主题变量
+const rootEl = ref<HTMLElement | null>(null)
+
+function applyLocalTheme() {
+  const el = rootEl.value
+  if (!el) return
+  el.setAttribute('ui-theme-scope', 'aichat')
+  const vars: Record<string, string> = {
+    '--devui-text': 'var(--text, #FFFFFF)',
+    '--devui-global-bg': 'var(--dark-bg, #121C2B)',
+    '--mc-icon-hover-bg': 'rgba(255,255,255,0.12)',
+    '--card-bg': 'rgba(30, 40, 60, 0.8)',
   }
-}
-
-function onInput(v) {
-  inputValue.value = v
-}
-
-function onSelectHistory(id) {
-  selectedId.value = id
-}
-
-function onNewChat() {
-  // TODO: 清空当前会话、发起新对话
-  selectedId.value = null
+  Object.entries(vars).forEach(([k, v]) => el.style.setProperty(k, v))
 }
 
 onMounted(() => {
-  try {
-    const cached = JSON.parse(localStorage.getItem('loggedInUser') || 'null')
-    if (Array.isArray(cached)) {
-      userName.value = cached[1] || ''
-      patientId.value = cached[2] || ''
-    }
-  } catch (e) { /* ignore */ }
+  applyLocalTheme()
 })
 </script>
 
-<style scoped>
-/* 容器卡片：使用全局主题变量 */
-.aichat-card {
-  padding: 0;
-  backdrop-filter: blur(12px);
-}
+<style scoped lang="scss">
+// 仅对本组件生效：在 scoped 样式块中引入公共 scss
+// 使用 @use（推荐）或 @import（若你的样式文件依赖全局输出）
+@use '@/assets/style.scss' as *;
 
-/* 布局占位：让内容区域自适应高度并滚动 */
-.aichat-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 70vh;
-}
+.aichat-root {
+  .Assistant {
+    &.matechat-layout {
+      padding: 8px;
+    }
 
-/* 头部简洁透明，分隔线弱化 */
-.aichat-header {
-  background: transparent;
-  color: var(--text, #FFFFFF);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
+    :deep(.navbar-top-container) {
+      display: flex;
 
-/* 内容区域滚动，留出内边距 */
-.aichat-content {
-  flex: 1;
-  padding: 16px;
-  overflow: auto;
-}
-
-/* 底部输入条固定在卡片底部，半透明背景与分隔线 */
-.aichat-sender {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.15);
-  padding: 12px 16px;
+      .icon-history {
+        display: inline-block !important;
+      }
+    }
+  }
 }
 </style>

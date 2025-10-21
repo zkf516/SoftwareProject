@@ -2,12 +2,20 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import AutoImport from "unplugin-auto-import/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue(),
+        vueJsx(),
         tailwindcss(),
+        AutoImport({
+            include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
+            imports: ["vue"],
+            dirs: ["./src"],
+        }),
     ],
     css: {
         preprocessorOptions: {
@@ -19,8 +27,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'),
-            '@views': path.resolve(__dirname, 'src/views')
+            '@view': path.resolve(__dirname, 'src/views'),
+            '@': path.resolve(__dirname, 'src')
         }
     }
 })

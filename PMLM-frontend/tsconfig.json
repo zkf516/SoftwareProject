@@ -1,0 +1,39 @@
+{
+    "references": [
+        {"path": "./tsconfig.app.json" },
+        {"path": "./tsconfig.node.json"}
+    ],
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "strict": true,
+        "jsx": "preserve",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+            "@view/*": [
+                "src/views/*"
+            ]
+        },
+        "types": [
+            "node",
+            "vite/client"
+        ]
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue", 
+        "src",
+        "auto-imports.d.ts",
+        "env.d.ts"
+    ],
+}
