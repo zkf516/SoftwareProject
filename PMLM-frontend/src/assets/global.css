@@ -17,6 +17,10 @@
     --input-bg: rgba(255, 255, 255, 0.1);
     --devui-base-bg: rgba(255, 255, 255, 0.1);
     --devui-dividing-line: rgba(255, 255, 255, 0.1);
+
+    --devui-text: #FFFFFF;
+    --devui-list-item-active-text: #FFFFFF;
+    --devui-list-item-active-bg: rgba(255, 255, 255, 0.1);
     --button-bg: #93C5FD;
 
     --border: oklch(0.92 0.004 286.32);

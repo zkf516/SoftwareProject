@@ -47,6 +47,7 @@ const triggerEl = ref(null)
 const popEl = ref(null)
 const popStyle = ref('position:absolute;')
 let cleanup = null
+let removeOutsideClick = null
 
 const place = async () => {
   if (!triggerEl.value || !popEl.value) return
@@ -64,6 +65,27 @@ const startAutoUpdate = () => {
 }
 const stopAutoUpdate = () => { if (cleanup) { cleanup(); cleanup = null } }
 
+// 点击触发时，点击外部自动关闭
+const onOutsideClick = (e) => {
+  const t = e.target
+  if (!popEl.value || !triggerEl.value) return
+  const inPop = popEl.value.contains(t)
+  const inTrigger = triggerEl.value.contains(t)
+  if (!inPop && !inTrigger) {
+    visible.value = false
+  }
+}
+const addOutsideClick = () => {
+  if (removeOutsideClick) return
+  const handler = (e) => onOutsideClick(e)
+  document.addEventListener('mousedown', handler, true)
+  removeOutsideClick = () => {
+    document.removeEventListener('mousedown', handler, true)
+    removeOutsideClick = null
+  }
+}
+const stopOutsideClick = () => { if (removeOutsideClick) { removeOutsideClick() } }
+
 const onEnter = () => { if (props.trigger === 'hover') visible.value = true }
 const onLeave = () => { if (props.trigger === 'hover') visible.value = false }
 const onClick = () => { if (props.trigger === 'click') visible.value = !visible.value }
@@ -76,10 +98,18 @@ watch(() => props.isOpen, (v) => {
 }, { immediate: true })
 
 watch(visible, async (v) => {
-  if (v) { await nextTick(); place(); startAutoUpdate() } else { stopAutoUpdate() }
+  if (v) {
+    await nextTick();
+    place();
+    startAutoUpdate();
+    if (props.trigger === 'click') addOutsideClick()
+  } else {
+    stopAutoUpdate();
+    if (props.trigger === 'click') stopOutsideClick()
+  }
 })
 
-onBeforeUnmount(stopAutoUpdate)
+onBeforeUnmount(() => { stopAutoUpdate(); stopOutsideClick() })
 </script>
 
 <style scoped>
@@ -87,7 +117,7 @@ onBeforeUnmount(stopAutoUpdate)
   padding: 8px 10px;
   border-radius: 8px;
   background: var(--devui-base-bg, #1f2937);
-  color: var(--devui-light-text, #fff);
+  color: var(--text, #ffffff);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   font-size: 12px;

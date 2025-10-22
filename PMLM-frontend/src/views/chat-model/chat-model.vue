@@ -1,16 +1,17 @@
 <template>
-  <d-dropdown
-    :position="['top']"
-    :offset='8'
-    class='agent-menu'
-    @toggle="(val:boolean) => (isAgentOpen = val)"
+  <SimplePopover
+    trigger="manually"
+    :isOpen="isAgentOpen"
+    :position="['bottom-start']"
+    :gap="8"
+    :contentClass="'agent-menu'"
   >
-    <div class="agent-wrapper">
+    <div class="agent-wrapper" @click="toggleAgent">
       <img :src="selectedAgent.iconPath" />
       <span>{{ selectedAgent.label }}</span>
-      <i :class="['icon-chevron-down-2', { 'is-open': isAgentOpen }]"></i>
+      <i :class="['icon-chevron-down-2', { 'is-open': isAgentOpen }] "></i>
     </div>
-    <template #menu>
+    <template #content>
       <McList :data="agentList" @select="onSelectModel">
         <template #item="{ item }">
           <div class='agent-list-item'>
@@ -20,14 +21,15 @@
         </template>
       </McList>
     </template>
-  </d-dropdown>
+  </SimplePopover>
 </template>
 
 <script setup lang="ts">
 import { LLM_MODELS } from '@/models/config';
 import type { ModelOption } from '@/models/types';
 import { useChatModelStore } from '@/store';
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 
 const chatModelStore = useChatModelStore();
 const isAgentOpen = ref(false);
@@ -52,14 +54,29 @@ const selectedAgent = ref(agentList.value[0]);
 chatModelStore.currentModel = selectedAgent.value;
 selectedAgent.value.active = true;
 
-const onSelectModel = (val) => {
+const onSelectModel = (val: ModelOption) => {
   for (const item of agentList.value) {
     item.active = item.label === val.label;
   }
   selectedAgent.value = val;
   chatModelStore.currentModel = val;
   chatModelStore.currentModelName = val.modelName;
+  isAgentOpen.value = false; // 选择后关闭下拉
 };
+
+const toggleAgent = () => { isAgentOpen.value = !isAgentOpen.value }
+
+// 点击外部关闭（与 SimplePopover 的手动模式配合）
+const onDocClick = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  const inTrigger = (target.closest('.agent-wrapper') !== null)
+  const inPopover = (target.closest('.simple-popover.agent-menu') !== null)
+  if (!inTrigger && !inPopover) {
+    isAgentOpen.value = false
+  }
+}
+onMounted(() => { document.addEventListener('mousedown', onDocClick, true) })
+onBeforeUnmount(() => { document.removeEventListener('mousedown', onDocClick, true) })
 </script>
 
 <style scoped lang="scss">
@@ -82,11 +99,12 @@ const onSelectModel = (val) => {
 
   span {
     font-size: $devui-font-size;
-    color: $devui-text;
+    color: var(--text);
     margin-right: 8px;
     word-break: break-all;
     overflow: hidden;
     display: -webkit-box;
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
