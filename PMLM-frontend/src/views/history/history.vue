@@ -173,10 +173,67 @@ watch(
     white-space: nowrap;
   }
 
+  /* 顶层容器（label.devui-search.history-search）：强制横向排列并自带边框 */
+  .history-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid $devui-form-control-line;
+    border-radius: 999px;
+    background-color: transparent;
+    box-sizing: border-box;
+  }
+
+  /* 获得焦点时高亮边框（使用容器而非内层 input） */
+  .history-search:focus-within {
+    border-color: $devui-primary;
+  }
+
   .history-search :deep() {
+    /* 顶层 icon 容器（与 .devui-input 为兄弟）水平居中 */
+    .devui-search__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 内层输入容器占满剩余空间，不再绘制边框，继承外层视觉 */
     .devui-input {
-      border: none;
-      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background-color: transparent;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    /* 内层前后缀区域与图标水平方向居中 */
+    .devui-input__prefix,
+    .devui-input__suffix,
+    .icon,
+    i.icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 输入框本体占满剩余空间，去除自身边框背景以便继承父容器视觉 */
+    .devui-input__inner,
+    input[type="text"],
+    input[type="search"],
+    .devui-input input {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: $devui-text;
     }
   }
 

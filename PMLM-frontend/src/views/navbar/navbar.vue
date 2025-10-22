@@ -16,14 +16,14 @@
     <div class="navbar-bottom">
       <SwitchLang v-if="!GlobalConfig.language" />
       <Theme v-if="!GlobalConfig.theme" />
-      <d-popover :position="['right']" trigger="hover">
+      <SimplePopover :position="['right']" trigger="hover">
         <template #content>
           <span class="devui-text">{{ $t("navbar.systemSetting") }}</span>
         </template>
         <div class="switch-lang-container">
           <i class="icon-setting system-setting" />
         </div>
-      </d-popover>
+      </SimplePopover>
     </div>
   </div>
 </template>
@@ -33,6 +33,7 @@ import GlobalConfig from "@/global-config";
 import { Theme } from "@/views/theme";
 import SwitchLang from "./switch-lang.vue";
 import Logo from "../../../public/logo.svg";
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 </script>
 
 <style scoped lang="scss">
@@ -151,7 +152,7 @@ import Logo from "../../../public/logo.svg";
 }
 
 .devui-text {
-  color: $devui-text;
+  color: var(--text);
 }
 
 @media screen and (max-width: 940px) {

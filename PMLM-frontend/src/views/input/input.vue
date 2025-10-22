@@ -12,17 +12,16 @@
           <InputOnlineSearch />
           <span class="input-foot-dividing-line"></span>
           <InputAtModel @click="onModelClick" />
-          <d-popover
+          <SimplePopover
             :content="$t('underDevelop')"
             trigger="hover"
             :position="['top']"
-            style="color: var(--devui-text)"
           >
             <div class="input-word-container">
               <PromptsIcon />
               <span>{{ $t("thesaurus") }}</span>
             </div>
-          </d-popover>
+          </SimplePopover>
           <InputAppendix />
           <span class="input-foot-dividing-line"></span>
           <span class="input-foot-maxlength">
@@ -31,16 +30,12 @@
         </div>
       </template>
     </McInput>
-    <div class="statement-box">
-      <span>{{ $t("input.disclaimer") }}</span>
-      <span class="separator" />
-      <span class="link-span">{{ $t("input.privacyStatement") }}</span>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { PromptsIcon } from '@/components/Collapse';
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 import { useChatMessageStore, useChatModelStore } from '@/store';
 import { InputAppendix } from '@view/appendix';
 import { InputAtModel } from '@view/chat-model';
@@ -73,24 +68,36 @@ const onModelClick = () => {
 .input-container {
   width: 100%;
   max-width: 1200px;
-  padding: 0 12px 12px 12px;
+  padding: 0 12px 15px 12px;
 
   .input-foot-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    margin-right: 8px;
-
-    .input-word-container {
       display: flex;
       align-items: center;
-      gap: 4px;
-      height: 30px;
+      justify-content: flex-start; /* 保证整体靠左对齐 */
+      gap: 8px; /* 控制各项水平间距 */
+      width: 100%;
+      height: 100%;
+      margin-right: 8px;
+      flex-wrap: nowrap; /* 禁止换行，避免竖排堆叠 */
+
+      /* 统一子项展示为内联水平排列，避免被默认块级撑满换行 */
+      > * {
+        display: inline-flex;
+        align-items: center;
+        height: 32px; /* 与 .mc-input-foot 的高度保持一致 */
+        line-height: 32px;
+        white-space: nowrap;
+      }
+
+    .input-word-container {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 32px; /* 跟随底部工具条高度 */
       color: $devui-text;
       font-size: $devui-font-size;
       border-radius: 4px;
-      padding: 6px;
+        padding: 0 8px; /* 横向内边距，去除多余垂直内边距避免高度不匹配 */
       cursor: pointer;
 
       svg {
@@ -110,11 +117,12 @@ const onModelClick = () => {
     span {
       color: $devui-text;
       cursor: pointer;
+        white-space: nowrap;
     }
 
     .input-foot-dividing-line {
-      width: 1px;
-      height: 14px;
+        width: 1px;
+        height: 16px; /* 稍微拉高分隔线以居中对齐 */
       background-color: $devui-line;
       margin: 0 8px;
     }
@@ -122,9 +130,16 @@ const onModelClick = () => {
     .input-foot-maxlength {
       font-size: $devui-font-size-sm;
       color: $devui-aide-text;
+        white-space: nowrap;
     }
   }
   :deep() {
+    /* 底部工具条整体靠左并保持单行 */
+    .mc-input-foot {
+      justify-content: flex-start;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
     .mc-input-foot-left {
       overflow-x: auto;
       scrollbar-width: none;

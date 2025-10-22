@@ -14,6 +14,7 @@
           :content="msg.content"
           :align="'right'"
           :avatarConfig="msg.avatarConfig"
+          :class="[ 'rounded-2xl', 'border border-gray-700','p-3']"
         >
         <template #bottom>
           <div class="bubble-bottom-operations">
@@ -26,14 +27,14 @@
           :loading="msg.loading ?? false"
           :avatarConfig="msg.avatarConfig"
           :data-v-idx="idx"
-          :class="msg.isThinkShrink ? 'think-block-shrink' : 'think-block-expand'"
+          :class="[msg.isThinkShrink ? 'think-block-shrink' : 'think-block-expand', 'rounded-2xl', 'border border-gray-700', 'p-3']"
         >
           <div class="think-toggle-btn" @click="toggleThink(msg)" v-if="msg.reasoning_content">
             <i class="icon-point"></i>
             <span>{{ msg.content ? (t('chat.thinkingComplete') + t('chat.thinkingTime', { time: getThinkingTime(msg) })) : t('chat.thinking') }}</span>
             <i :class="btnIcon"></i>
           </div>
-          <McMarkdownCard :content="renderMessage(msg)" :theme="themeStore.theme" :enableThink="msg.reasoning_content" />
+          <McMarkdownCard :content="renderMessage(msg)" :theme="darkTheme" :enableThink="msg.reasoning_content" />
           <template #bottom>
             <div class="bubble-bottom-operations" v-if="msg.complete">
               <i class="icon-copy-new"></i>
@@ -48,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import { darkTheme } from '@/constant';
 import { useChatMessageStore, useThemeStore } from '@/store';
 import type { IMessage } from '@/types';
 import { nextTick, ref, watch } from 'vue';

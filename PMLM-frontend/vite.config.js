@@ -22,7 +22,11 @@ export default defineConfig({
             scss: {
                 // 静默 Dart Sass 的弃用告警（来源于第三方依赖 devui-theme 的 @import 与 legacy JS API）
                 silenceDeprecations: ['import', 'legacy-js-api']
-            }
+            },
+            additionalData: `
+                @use "devui-theme/styles-var/devui-var.scss" as *;
+                @use "src/assets/tokens.scss" as *;
+                `
         }
     },
     resolve: {

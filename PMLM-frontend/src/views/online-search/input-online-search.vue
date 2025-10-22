@@ -1,14 +1,15 @@
 <template>
-  <d-popover :content="$t('underDevelop')" trigger="hover" :position="['top']" style="color: var(--devui-text)">
+  <SimplePopover :content="$t('underDevelop')" trigger="hover" :position="['top']">
     <div class="input-online-search-container" :class="{ 'active': checked }" @click="checked = !checked">
       <i class="icon-point"></i>
       <span>{{ $t("onlineSearch") }}</span>
     </div>
-  </d-popover>
+  </SimplePopover>
 </template>
 
 <script setup lang="ts">
 const checked = ref(false);
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 </script>
 
 <style scoped lang="scss">
@@ -22,13 +23,13 @@ const checked = ref(false);
   cursor: pointer;
   border-radius: 24px;
   padding: 4px 8px;
-  background-color: $devui-disabled-bg;
+  background-color: var(--input-bg);
   min-width: 85px;
   height: 30px;
 
   &:hover {
     color: $devui-brand;
-    background-color: var(--devui-list-item-active-bg);
+    background-color: var(--button-bg);
   }
 
   span {

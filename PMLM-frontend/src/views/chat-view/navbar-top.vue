@@ -7,24 +7,24 @@
       ></McHeader>
     </div>
     <div class="navbar-right">
-      <d-popover :position="['bottom-end']" class="navbar-top-history-menu">
+      <SimplePopover :position="['bottom-end']" :content-class="'navbar-top-history-menu'">
         <div class="switch-lang-container">
           <i class="icon-history" />
         </div>
         <template #content>
           <HistoryList class="navbar-top-history" />
         </template>
-      </d-popover>
+      </SimplePopover>
       <SwitchLang v-if="!GlobalConfig.language" />
       <Theme v-if="!GlobalConfig.theme" />
-      <d-popover :position="['bottom-end']" trigger="hover">
+      <SimplePopover :position="['bottom-end']" trigger="hover">
         <template #content>
           <span class="devui-text">{{ $t("navbar.systemSetting") }}</span>
         </template>
         <div class="switch-lang-container">
           <i class="icon-setting system-setting" />
         </div>
-      </d-popover>
+      </SimplePopover>
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ import { SwitchLang } from "@view/navbar";
 import { Theme } from "@view/theme";
 import { HistoryList } from "@view/history";
 import Logo from "../../../public/logo.svg";
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 </script>
 
 <style scoped lang="scss">
@@ -128,7 +129,8 @@ body[ui-theme="galaxy-theme"] {
 <style lang="scss">
 @import "devui-theme/styles-var/devui-var.scss";
 
-.devui-popover__content.navbar-top-history-menu {
+.devui-popover__content.navbar-top-history-menu,
+.simple-popover.navbar-top-history-menu {
   padding: 0;
   background-color: $devui-global-bg;
   box-shadow: $devui-shadow-length-connected-overlay $devui-shadow;

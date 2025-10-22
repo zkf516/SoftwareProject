@@ -1,9 +1,9 @@
 <template>
-  <d-popover
+  <SimplePopover
     :is-open="isOpen"
     trigger="manually"
     :position="['bottom']"
-    class="history-operate-menu"
+    :content-class="'history-operate-menu'"
   >
     <i
       ref="iconEl"
@@ -15,7 +15,7 @@
         {{ $t("delete") }}
       </div>
     </template>
-  </d-popover>
+  </SimplePopover>
   <d-modal v-model="modalVisible" :title="$t('confirmDelete')">
     <div>{{ $t("history.deleteHistoryConfirmTxt") }}</div>
     <template #footer>
@@ -58,12 +58,14 @@ onMounted(() => {
 defineOptions({
   inheritAttrs: false,
 });
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 </script>
 
 <style lang="scss">
 @import "devui-theme/styles-var/devui-var.scss";
 
-.devui-popover__content.history-operate-menu {
+.devui-popover__content.history-operate-menu,
+.simple-popover.history-operate-menu {
   padding: 8px;
   color: $devui-text;
   background-color: $devui-base-bg;

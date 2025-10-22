@@ -11,16 +11,15 @@
           <span class="agent-knowledge-dividing-line"></span>
           <Knowledge />
         </div>
-        <d-popover
+        <SimplePopover
           :content="$t('newChat')"
           trigger="hover"
           :position="['top']"
-          style="color: var(--devui-text)"
         >
           <div class="new-chat-setting" @click="onNewConvo">
             <i class="icon-add"></i>
           </div>
-        </d-popover>
+        </SimplePopover>
       </div>
       <Input />
     </div>
@@ -51,6 +50,7 @@ import NavbarTop from "./navbar-top.vue";
 import { ExpandIcon } from "@/components/Collapse";
 import GlobalConfig from "@/global-config";
 import { DisplayShape } from "@/global-config-types";
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 
 const chatHistoryStore = useChatHistoryStore();
 const chatMessageStore = useChatMessageStore();

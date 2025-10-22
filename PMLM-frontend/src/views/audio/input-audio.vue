@@ -1,5 +1,5 @@
 <template>
-  <d-popover :content="$t('audio') + $t('underDevelop')" trigger="hover" :position="['top']" style="color: var(--devui-text)">
+  <SimplePopover :content="$t('audio') + $t('underDevelop')" trigger="hover" :position="['top']">
     <span class="input-audio-container">
       <svg fill="none" width="16" height="16" viewBox="0 0 16 16">
         <g id="microphone">
@@ -13,8 +13,12 @@
         </g>
       </svg>
     </span>
-  </d-popover>
+  </SimplePopover>
 </template>
+
+<script setup lang="ts">
+import SimplePopover from '@/components/ui/SimplePopover.vue'
+</script>
 
 <style scoped lang="scss">
 @import "devui-theme/styles-var/devui-var.scss";

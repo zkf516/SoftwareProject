@@ -1,18 +1,19 @@
 <template>
-  <d-popover
+  <SimplePopover
     :content="$t('underDevelop')"
     trigger="hover"
     :position="['top']"
-    style="color: var(--devui-text)"
   >
     <div class="container">
       <i class="icon-add"></i>
       <span>{{ $t("appendix") }}</span>
     </div>
-  </d-popover>
+  </SimplePopover>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import SimplePopover from '@/components/ui/SimplePopover.vue'
+</script>
 
 <style scoped lang="scss">
 @import "devui-theme/styles-var/devui-var.scss";

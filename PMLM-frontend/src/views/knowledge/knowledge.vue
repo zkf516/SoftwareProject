@@ -1,19 +1,19 @@
 <template>
-  <d-popover
+  <SimplePopover
     :content="$t('underDevelop')"
     trigger="hover"
     :position="['top']"
-    style="color: var(--devui-text)"
   >
     <div class="knowledge-wrapper">
       <AddKnowledgeIcon />
       <span>{{ $t("knowledge.addKnowledge") }}</span>
     </div>
-  </d-popover>
+  </SimplePopover>
 </template>
 
 <script setup lang="ts">
 import { AddKnowledgeIcon } from "@/components/Collapse";
+import SimplePopover from '@/components/ui/SimplePopover.vue'
 </script>
 
 <style scoped lang="scss">
