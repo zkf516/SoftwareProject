@@ -56,8 +56,7 @@ export const useChatMessageStore = defineStore("chat-message", () => {
     if (MODEL_CONFIGS.enableMock) {
       /* 模拟流式数据返回 */
       setTimeout(async () => {
-        messages.value.at(-1).loading = false;
-        for (let i = 0; i < content.length; ) {
+        for (let i = 0; i < content.length;) {
           await new Promise((r) => setTimeout(r, 300 * Math.random()));
           const step = Math.max(
             5,
@@ -70,6 +69,9 @@ export const useChatMessageStore = defineStore("chat-message", () => {
           );
           messageChangeCount.value++;
         }
+        // 标记流结束
+        messages.value.at(-1).loading = false;
+        messages.value.at(-1).complete = true;
         chatHistoryStore.addHistory(
           chatStatusStore.currentChatId,
           dayjs().format("YYYY-MM-DD HH:mm"),
@@ -107,7 +109,6 @@ export const useChatMessageStore = defineStore("chat-message", () => {
   };
 
   const onMessageChange = (msg: ChunkResponse) => {
-    messages.value.at(-1).loading = false;
     const currentMessage = messages.value[messages.value.length - 1];
     if (!currentMessage.startTime) {
       currentMessage.startTime = Date.now();

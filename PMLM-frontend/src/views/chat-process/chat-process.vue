@@ -14,7 +14,7 @@
           :content="msg.content"
           :align="'right'"
           :avatarConfig="msg.avatarConfig"
-          :class="[ 'rounded-2xl', 'border border-gray-700','p-3']"
+          :class="[ 'rounded-2xl', 'border border-gray-700','p-3', 'text-background']"
         >
         <template #bottom>
           <div class="bubble-bottom-operations">
@@ -34,7 +34,11 @@
             <span>{{ msg.content ? (t('chat.thinkingComplete') + t('chat.thinkingTime', { time: getThinkingTime(msg) })) : t('chat.thinking') }}</span>
             <i :class="btnIcon"></i>
           </div>
-          <McMarkdownCard :content="renderMessage(msg)" :theme="'dark'" :enableThink="!!msg.reasoning_content" />
+          <McMarkdownCard
+            :content="renderMessage(msg)"
+            :theme="'dark'"
+            :enableThink="String(msg.from) !== 'user' && ((msg.reasoning_content && String(msg.reasoning_content).length > 0) || (msg.loading && Object.prototype.hasOwnProperty.call(msg, 'reasoning_content')))"
+          />
           <template #bottom>
             <div class="bubble-bottom-operations" v-if="msg.complete">
               <i class="icon-copy-new"></i>
@@ -84,11 +88,24 @@ const getThinkingTime = (msg: IMessage) => {
 };
 
 const renderMessage = (msg: IMessage) => {
-  if (msg.from === 'user' || !msg.reasoning_content) {
+  // If message comes from user or the server hasn't provided the reasoning_content property at all,
+  // just return content. But if the property exists (even empty string), render the <think> block
+  // so the markdown card can treat thinking and answer as distinct parts and keep consistent spacing
+  const hasReasoning = Object.prototype.hasOwnProperty.call(msg, 'reasoning_content');
+  if (String(msg.from) === 'user' || !hasReasoning) {
     return msg.content;
   }
+
+  const reasoning = msg.reasoning_content || '';
+  const answer = msg.content || '';
+
+  // 如果 reasoning_content 为空且消息已完成（非 loading），不要渲染空的思考块 — 直接返回答案
+  if (reasoning === '' && !msg.loading) {
+    return answer;
+  }
+
   // 在思考块与回答之间增加明确的分隔（两个换行），便于渲染时换行显示
-  return `<think>${msg.reasoning_content}</think>\n\n${msg.content}`;
+  return `<think>${reasoning}</think>\n\n${answer}`;
 };
 
 // 通过鼠标滚轮判断是否需要自动滚动到最底部
