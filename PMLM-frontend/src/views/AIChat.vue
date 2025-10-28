@@ -46,7 +46,7 @@ function applyLocalTheme() {
   el.setAttribute('ui-theme-scope', 'aichat')
   const vars: Record<string, string> = {
     '--devui-text': 'var(--text, #FFFFFF)',
-    '--devui-global-bg': 'var(--dark-bg, #121C2B)',
+    '--devui-global-bg': 'var(--input-bg, #121C2B)',
     '--mc-icon-hover-bg': 'rgba(255,255,255,0.12)',
     '--card-bg': 'rgba(30, 40, 60, 0.8)',
   }

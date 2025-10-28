@@ -1,14 +1,13 @@
 <template>
-  <div class="card stats-card">
-    <h3 class="card-title">患者特征：孕妇</h3>
-    <div class="vital-signs">
+  <div class="w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[360px] overflow-auto">
       <div
-        class="data-group"
         v-for="item in items"
         :key="item.key"
+        class="flex flex-col p-4 rounded-xl bg-gray-800 bg-opacity-60"
       >
-        <p class="infomation">{{ item.label }}</p>
-        <p class="data">{{ valueOf(item.key) }}</p>
+        <span class="text-xs text-slate-400">{{ item.label }}</span>
+        <span class="text-base font-medium text-white">{{ valueOf(item.key) }}</span>
       </div>
     </div>
   </div>
@@ -70,57 +69,4 @@ export default {
 </script>
 
 <style scoped>
-/* 让卡片本身可以变“矮”，且内部自己滚动 */
-.stats-card {
-  padding: 0.7rem 1.2rem 1.5rem;
-  max-height: 360px;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-title {
-  margin: 0.7rem;
-  color: var(--accent);
-  font-size: 1.4rem;
-}
-
-.vital-signs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  overflow: auto;
-}
-
-.data-group {
-  display: flex;
-  gap: 70px;
-  padding: 8px 25px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-}
-
-.infomation {
-  color: var(--accent);
-  border-left: 3px solid var(--accent);
-  padding-left: 0.5rem;
-  min-width: 74px;
-  font-size: 0.95rem;
-}
-
-.data {
-  color: #fff;
-  font-size: 0.95rem;
-}
-
-@media (max-width: 1200px) {
-  .vital-signs {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .vital-signs {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

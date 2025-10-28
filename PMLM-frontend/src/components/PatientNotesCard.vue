@@ -1,8 +1,11 @@
 <template>
-  <div class="card notes-card">
-    <h3 class="card-title">患者体征</h3>
-    <div class="data"><p style="white-space: pre-line">{{ notes }}</p></div>
+  <div class="w-full">
+    <div class="flex flex-col p-4 rounded-xl bg-gray-800 bg-opacity-60">
+      <span class="text-base font-medium text-white/90 whitespace-pre-line pb-2">备注</span>
+      <p class="text-xs text-slate-400 p-1">{{ notes }}</p>
+    </div>
   </div>
+  
 </template>
 
 <script>
@@ -24,13 +27,4 @@ export default {
 </script>
 
 <style scoped>
-.notes-card { 
-  padding: 0.7rem 1.2rem 1.5rem; 
-}
-.card-title {
-  margin: 0.7rem;
-  color: var(--accent); 
-  font-size: 1.4rem;
-}
-.data { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px; }
 </style>

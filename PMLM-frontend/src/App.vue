@@ -67,11 +67,11 @@ export default {
     getParticlesConfig() {
       return {
         particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: '#ffffff' },
+          number: { value: 100, density: { enable: true, value_area: 800 } },
+          color: { value: '#e6f7ff' },
           shape: { type: 'circle' },
           opacity: {
-            value: 0.4,
+            value: 0.7,
             random: true,
             anim: { enable: false, speed: 0, opacity_min: 0.1, sync: false }
           },
@@ -82,9 +82,9 @@ export default {
           },
           line_linked: {
             enable: true,
-            distance: 150,
+            distance: 160,
             color: '#1E88E5',
-            opacity: 0.2,
+            opacity: 0.5,
             width: 1
           },
           move: {

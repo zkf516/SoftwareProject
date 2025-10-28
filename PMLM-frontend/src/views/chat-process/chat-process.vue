@@ -27,14 +27,14 @@
           :loading="msg.loading ?? false"
           :avatarConfig="msg.avatarConfig"
           :data-v-idx="idx"
-          :class="[msg.isThinkShrink ? 'think-block-shrink' : 'think-block-expand', 'rounded-2xl', 'border border-gray-700', 'p-3']"
+          :class="[msg.isThinkShrink ? 'think-block-shrink' : 'think-block-expand', 'rounded-2xl', 'border border-gray-700', 'p-3',]"
         >
           <div class="think-toggle-btn" @click="toggleThink(msg)" v-if="msg.reasoning_content">
             <i class="icon-point"></i>
             <span>{{ msg.content ? (t('chat.thinkingComplete') + t('chat.thinkingTime', { time: getThinkingTime(msg) })) : t('chat.thinking') }}</span>
             <i :class="btnIcon"></i>
           </div>
-          <McMarkdownCard :content="renderMessage(msg)" :theme="darkTheme" :enableThink="msg.reasoning_content" />
+          <McMarkdownCard :content="renderMessage(msg)" :theme="'dark'" :enableThink="!!msg.reasoning_content" />
           <template #bottom>
             <div class="bubble-bottom-operations" v-if="msg.complete">
               <i class="icon-copy-new"></i>
@@ -49,7 +49,6 @@
 </template>
 
 <script setup lang="ts">
-import { darkTheme } from '@/constant';
 import { useChatMessageStore, useThemeStore } from '@/store';
 import type { IMessage } from '@/types';
 import { nextTick, ref, watch } from 'vue';
@@ -88,7 +87,8 @@ const renderMessage = (msg: IMessage) => {
   if (msg.from === 'user' || !msg.reasoning_content) {
     return msg.content;
   }
-  return `<think>${msg.reasoning_content}</think>${msg.content}`;
+  // 在思考块与回答之间增加明确的分隔（两个换行），便于渲染时换行显示
+  return `<think>${msg.reasoning_content}</think>\n\n${msg.content}`;
 };
 
 // 通过鼠标滚轮判断是否需要自动滚动到最底部
@@ -153,7 +153,8 @@ const onReAnswer = (msg: IMessage) => {
 watch(
   () => chatMessageStore.messageChangeCount,
   () => {
-    if (chatMessageStore.messages.at(-1)?.loading) {
+  const lastMsg = chatMessageStore.messages[chatMessageStore.messages.length - 1];
+  if (lastMsg?.loading) {
       // 用户发出新消息时 该watch只会监听到AI第一次返回的loading状态，此时应该自动返回到消息最底部
       wheelHadUp.value = false;
       clickOnScrollbar.value = false;
@@ -240,4 +241,7 @@ body[ui-theme='galaxy-theme'] {
   display: none;
 }
 
+:deep(.mc-markdown-render.mc-markdown-render-light) {
+  color: #ffffff; /* 目标颜色 */
+}
 </style>

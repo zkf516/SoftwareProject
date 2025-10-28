@@ -19,6 +19,7 @@
     --devui-dividing-line: rgba(255, 255, 255, 0.1);
 
     --devui-text: #FFFFFF;
+    --devui-text-weak: #FFFFFF;
     --devui-list-item-active-text: #FFFFFF;
     --devui-list-item-active-bg: rgba(255, 255, 255, 0.1);
     --button-bg: #93C5FD;
@@ -257,6 +258,14 @@ i[class*=" fa-"] {
     grid-template-rows: auto 1fr;
     /* 右上行按内容自适应，右下行填满剩余 */
 }
+
+
+.mc-markdown-render,
+.mc-markdown-render-light,
+.mc-markdown-render-dark {
+    color: #FFFFFF;
+}
+
 
 @media (max-width: 960px) {
     .dashboard-grid--top-auto {

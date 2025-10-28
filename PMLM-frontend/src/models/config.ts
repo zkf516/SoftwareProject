@@ -4,7 +4,7 @@ import QwenIcon from "../../public/qwen.svg";
 
 export const MODEL_CONFIGS = {
   stream: true,
-  enableMock: true,
+  enableMock: false,
 };
 
 export enum LLMProviders {
@@ -34,7 +34,7 @@ export const LLM_MODELS: LLMModelsConfig[] = [
     // deepseek
     providerKey: LLMProviders.DEEP_SEEK,
     apiPath: "https://api.deepseek.com",
-    apiKey: "",
+    apiKey: "sk-eee534b0912b429db2ee8592af329650",
     models: [
       { name: "deepseek-chat", iconPath: DeepSeekIcon },
       { name: "deepseek-reasoner", iconPath: DeepSeekIcon },
