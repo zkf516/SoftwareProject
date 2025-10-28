@@ -2,9 +2,11 @@
 from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 from utils.db_utils import excel_to_sqlite, query_sqlite
+from utils.tools.OCR import OCRTool
 import os
 import random
 import jwt
+
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
@@ -136,10 +138,61 @@ def search_patient():
     data = query_sqlite(sql, { 'kw': f"%{keyword}%" })
     return jsonify(data)
 
-# 兼容保留：不建议外部使用的“自查”接口（容易越权）
+# 兼容保留：不建议外部使用的"自查"接口（容易越权）
 @app.route('/api/patient/self', methods=['GET'])
 def self_patient():
     return jsonify({'error': '该接口已弃用，请使用 /api/patient/me 并携带令牌'}), 410
+
+# 图片OCR识别接口
+@app.route('/api/ocr/recognize', methods=['POST'])
+@auth_required
+def recognize_image():
+    try:
+        # 检查是否有文件上传
+        if 'image' not in request.files:
+            return jsonify({'error': '未找到图片文件'}), 400
+        
+        file = request.files['image']
+        
+        # 检查文件名
+        if file.filename == '':
+            return jsonify({'error': '未选择图片文件'}), 400
+        
+        # 验证文件类型
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+        if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+            return jsonify({'error': '不支持的文件类型，仅支持 png、jpg、jpeg、gif'}), 400
+        
+        # 创建临时目录用于存储上传的文件
+        import os
+        upload_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp_uploads')
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
+        
+        # 生成唯一的文件名以避免冲突
+        import uuid
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{uuid.uuid4()}.{file_extension}"
+        file_path = os.path.join(upload_dir, unique_filename)
+        
+        # 保存文件到本地
+        file.save(file_path)
+        
+        # 创建OCR工具实例并调用
+        ocr_tool = OCRTool()
+        # 构造参数字符串，传入文件路径
+        # 使用json.dumps确保正确的JSON格式，避免路径中的特殊字符导致解析错误
+        import json
+        params = json.dumps({"image_path": file_path})
+        result = ocr_tool.call(params)
+        
+        # 可选：处理完后删除临时文件，避免占用存储空间
+        # os.remove(file_path)
+        
+        return jsonify({'status': 'success', 'result': result}), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'处理图片时出错: {str(e)}'}), 500
 
 # 查询病人所有检查记录（统一 SQL，按角色控制条件）
 @app.route('/api/patient/records', methods=['GET'])

@@ -91,6 +91,7 @@ PMLM-backend/medical.db
 
 # --- Temp ---
 temp/
+PMLM-backend/temp_uploads/
 tmp/
 *.local
 

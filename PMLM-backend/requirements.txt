@@ -4,3 +4,4 @@ openpyxl
 sqlalchemy
 Flask-Cors
 PyJWT
+qwen-agent
