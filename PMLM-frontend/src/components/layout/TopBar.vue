@@ -22,7 +22,7 @@
       </div>
 
       <!-- 右：按钮（末端） -->
-      <div class="flex items-center justify-self-end">
+      <div class="flex items-center justify-self-end text-background">
         <InteractiveHoverButton text="返回" hover-text-color="rgba(30, 40, 60, 0.8)" @click="handleBack" aria-label="返回"/>
       </div>
     </div>

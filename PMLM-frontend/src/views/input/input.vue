@@ -149,7 +149,12 @@ const onModelClick = () => {
       transition: fill $devui-animation-duration-slow
         $devui-animation-ease-in-out-smooth;
     }
+    .mc-textarea { 
+      background-color: transparent; 
+    }
   }
+
+
 
   .statement-box {
     font-size: 12px;

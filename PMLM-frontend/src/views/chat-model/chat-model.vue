@@ -2,7 +2,7 @@
   <SimplePopover
     trigger="manually"
     :isOpen="isAgentOpen"
-    :position="['bottom-start']"
+    :position="['top-start']"
     :gap="8"
     :contentClass="'agent-menu'"
   >

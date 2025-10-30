@@ -14,7 +14,7 @@
           :content="msg.content"
           :align="'right'"
           :avatarConfig="msg.avatarConfig"
-          :class="[ 'rounded-2xl', 'border border-gray-700','p-3']"
+          :class="[ 'rounded-2xl', 'border border-gray-700','p-3','text-background']"
         >
         <template #bottom>
           <div class="bubble-bottom-operations">
