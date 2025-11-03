@@ -1,6 +1,6 @@
 <template>
   <div :style="{ minHeight: 'calc(100vh - var(--header-height,64px))' }" class="flex flex-col items-center justify-center px-4 py-5 gap-6">
-    <!-- 卡片一：实时监测与统计（参考 Home 布局） -->
+    <!-- 卡片一：实时监测与统计 -->
     <div class="relative w-full max-w-4xl mx-auto flex justify-center h-[50vh]">
       <div class="absolute inset-0 scale-95 rounded-2xl bg-gray-800 blur-2xl opacity-40"></div>
       <div class="relative flex flex-col items-stretch justify-start rounded-2xl border border-gray-700 bg-gray-900 px-6 py-8 shadow-xl w-full h-full overflow-hidden">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <!-- 卡片二：医生笔记与病程（参考 Home 布局） -->
+    <!-- 卡片二：医生笔记与病程 -->
     <div class="relative w-full max-w-4xl mx-auto flex justify-center h-[35vh]">
       <div class="absolute inset-0 scale-95 rounded-2xl bg-gray-800 blur-2xl opacity-40"></div>
       <div class="relative flex flex-col items-stretch justify-start rounded-2xl border border-gray-700 bg-gray-900 px-6 py-8 shadow-xl w-full h-full overflow-hidden">
