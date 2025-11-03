@@ -1,10 +1,14 @@
 
 from flask import Flask, jsonify, request, g
 from flask_cors import CORS
-from utils.db_utils import excel_to_sqlite, query_sqlite
+from utils.db_utils import excel_to_sqlite, query_sqlite, execute_sql
+from utils.tools.OCR import OCRTool
 import os
 import random
 import jwt
+import json
+
+
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
@@ -61,6 +65,17 @@ def init_db():
     if not os.path.exists('medical.db'):
         excel_to_sqlite('disease.xlsx', 'patients')
         excel_to_sqlite('data.xlsx', 'records')
+    # 创建 ocr_results 表（如未存在）
+    create_ocr_table_sql = '''
+        CREATE TABLE IF NOT EXISTS ocr_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image_path TEXT,
+            result TEXT,
+            upload_time TEXT,
+            user_id TEXT
+        )
+    '''
+    execute_sql(create_ocr_table_sql)
 
 
 # ===== API 接口 =====
@@ -136,10 +151,81 @@ def search_patient():
     data = query_sqlite(sql, { 'kw': f"%{keyword}%" })
     return jsonify(data)
 
-# 兼容保留：不建议外部使用的“自查”接口（容易越权）
+# 兼容保留：不建议外部使用的"自查"接口（容易越权）
 @app.route('/api/patient/self', methods=['GET'])
 def self_patient():
     return jsonify({'error': '该接口已弃用，请使用 /api/patient/me 并携带令牌'}), 410
+
+# 图片OCR识别接口
+@app.route('/api/ocr/recognize', methods=['POST'])
+@auth_required
+def recognize_image():
+    try:
+        # 检查是否有文件上传
+        if 'image' not in request.files:
+            return jsonify({'error': '未找到图片文件'}), 400
+        
+        file = request.files['image']
+        
+        # 检查文件名
+        if file.filename == '':
+            return jsonify({'error': '未选择图片文件'}), 400
+        
+        # 验证文件类型
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+        if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+            return jsonify({'error': '不支持的文件类型，仅支持 png、jpg、jpeg、gif'}), 400
+        
+        # 创建临时目录用于存储上传的文件
+        import os
+        upload_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp_uploads')
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
+        
+        # 生成唯一的文件名以避免冲突
+        import uuid
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{uuid.uuid4()}.{file_extension}"
+        file_path = os.path.join(upload_dir, unique_filename)
+        
+        # 保存文件到本地
+        file.save(file_path)
+        
+        # 创建OCR工具实例并调用
+        ocr_tool = OCRTool()
+        # 构造参数字符串，传入文件路径
+        # 使用json.dumps确保正确的JSON格式，避免路径中的特殊字符导致解析错误
+        import json
+        params = json.dumps({"image_path": file_path})
+        result = ocr_tool.call(params)
+        
+        
+
+        # g.user 是 dict（来自 jwt.decode），使用 .get()
+        user_id_val = ''
+        if getattr(g, 'user', None):
+            user_id_val = g.user.get('pid') or g.user.get('uid') or ''
+        # 强制转为字符串，避免 None 等问题
+        user_id_val = str(user_id_val)
+
+        # 保存识别结果到数据库
+        sql_insert = """
+            INSERT INTO ocr_results (image_path, result, upload_time, user_id)
+            VALUES (:image_path, :result, :upload_time, :user_id)
+        """
+        params_insert = {
+            'image_path': file_path,  # 图片保存的路径
+            'result': result,         # OCR识别出来的文字内容
+            'upload_time': datetime.now().isoformat(),  # 当前时间
+            'user_id': user_id_val  # 用户标识
+        }
+        execute_sql(sql_insert, params_insert)
+        # os.remove(file_path)
+        
+        return jsonify({'status': 'success', 'result': result}), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'处理图片时出错: {str(e)}'}), 500
 
 # 查询病人所有检查记录（统一 SQL，按角色控制条件）
 @app.route('/api/patient/records', methods=['GET'])
@@ -178,6 +264,40 @@ def patient_records():
     """
     data = query_sqlite(sql, params)
     return jsonify(data)
+
+# ===== 病人自己修改patient（全字段可改，仅锁主键） =====
+PROTECTED_KEYS = {'首页编号', '住院号', 'CARDNO', '序号'}   # 不允许碰
+
+@app.route('/api/patient/update', methods=['POST'])
+@auth_required
+def patient_update():
+    body = request.get_json(silent=True) or {}
+    pid = g.user.get('pid')
+    if not pid:
+        return jsonify({'error': '令牌无效'}), 401
+
+    # 1. 去掉主键，防止误改
+    to_update = {k: v for k, v in body.items() if k not in PROTECTED_KEYS}
+    if not to_update:
+        return jsonify({'error': '未提供可修改字段'}), 400
+
+    # 2. 构造 SET 子句
+    set_clause = ', '.join([f"{k} = :{k}" for k in to_update])
+    params = {**to_update, 'pid': pid}
+
+    # 3. 执行更新
+    sql = f"""
+        UPDATE patients
+        SET {set_clause}
+        WHERE CARDNO = :pid OR 住院号 = :pid
+    """
+    row_count = execute_sql(sql, params)
+    if row_count == 0:
+        return jsonify({'error': '未找到该病人或无需更新'}), 404
+
+    # 4. 返回更新后的完整记录
+    new_row = query_sqlite("SELECT * FROM patients WHERE CARDNO = :pid OR 住院号 = :pid", {'pid': pid})
+    return jsonify(new_row[0])
 
 if __name__ == '__main__':
     init_db()
