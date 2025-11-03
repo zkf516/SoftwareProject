@@ -299,6 +299,52 @@ def patient_update():
     new_row = query_sqlite("SELECT * FROM patients WHERE CARDNO = :pid OR 住院号 = :pid", {'pid': pid})
     return jsonify(new_row[0])
 
+# ===== 病人新增检查记录 =====
+@app.route('/api/record', methods=['POST'])
+@auth_required
+@role_required('patient')
+def create_record():
+    body = request.get_json(silent=True) or {}
+
+    # 1. 拿到病人住院号（令牌驱动）
+    pid = g.user.get('pid')            # 可能是 CARDNO 或 住院号
+    if not pid:
+        return jsonify({'error': '令牌无效'}), 401
+
+    # 2. 把 CARDNO 转成住院号（如果令牌里存的是 CARDNO）
+    row = query_sqlite(
+        "SELECT 住院号 FROM patients WHERE CARDNO = :pid OR 住院号 = :pid",
+        {'pid': pid}
+    )
+    if not row:
+        return jsonify({'error': '未找到病人档案'}), 404
+    hospital_no = row[0]['住院号']
+
+    # 3. 构造待插入字段（只插有值的，避免空字符串覆盖默认值）
+    fields = {
+        '住院号': hospital_no,
+        '检查日期': body.get('检查日期', datetime.now().strftime('%Y-%m-%d'))
+    }
+    for k, v in body.items():
+        if k != '检查日期' and v not in (None, ''):
+            fields[k] = v
+
+    # 4. 生成动态 SQL
+    cols = ', '.join(fields.keys())
+    placeholders = ', '.join([f':{k}' for k in fields])
+    sql = f'INSERT INTO records ({cols}) VALUES ({placeholders})'
+
+    # 5. 插入
+    new_id = execute_sql(sql, fields)   # 返回最后插入的 id
+    if not new_id:
+        return jsonify({'error': '插入失败'}), 500
+
+    # 6. 返回完整新记录
+    new_row = query_sqlite('SELECT * FROM records WHERE rowid = :rid', {'rid': new_id})
+    return jsonify(new_row[0]), 201
+
+
 if __name__ == '__main__':
     init_db()
     app.run(host="0.0.0.0", port=3000)
+
