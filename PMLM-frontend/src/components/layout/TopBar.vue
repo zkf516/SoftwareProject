@@ -22,7 +22,7 @@
       </div>
 
       <!-- 右：按钮（末端） -->
-      <div class="flex items-center justify-self-end">
+      <div class="flex items-center justify-self-end text-background">
         <InteractiveHoverButton text="返回" hover-text-color="rgba(30, 40, 60, 0.8)" @click="handleBack" aria-label="返回"/>
       </div>
     </div>
@@ -32,14 +32,15 @@
 <script>
 import MorphingTabs from "@/components/ui/morphing-tabs/MorphingTabs.vue";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button/InteractiveHoverButton.vue";
+import { parseJWT } from "@/utils/jwtUtils";
 
 export default {
   name: 'TopBar',
   components: { MorphingTabs, InteractiveHoverButton },
   data() {
     return {
-      userName: '',
-      patientId: '',
+      userName: localStorage.getItem('role') || '',
+      patientId: parseJWT(localStorage.getItem('token')).pid || '',
       tabs: ['首页','记录','咨询','面板'],
       activeTab: '首页',
       tabRouteMap: {
@@ -63,11 +64,7 @@ export default {
       }
     },
     handleBack() {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else if (this.$router) {
-        this.$router.push('/home');
-      }
+      this.$router.push('/login');
     },
     handleTabChange(tab) {
       this.activeTab = tab;

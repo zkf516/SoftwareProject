@@ -1,7 +1,9 @@
 <template>
-	<div class="card records-card">
-		<h3 class="card-title">血常规历史数据</h3>
-		<div class="table-scroll">
+	<!-- 采用 PatientStatsCard 的卡片样式：深色背景、圆角、内边距和全宽 -->
+	<div class="w-full flex flex-col p-4 rounded-xl bg-gray-800 bg-opacity-60 h-[90%] min-h-0">
+		
+		<!-- 保持横向滚动容器，增加最大高度和垂直滚动，以模拟 PatientStatsCard 的 max-h/[360px] 样式 -->
+		<div class="table-scroll flex-1 min-h-0 h-full overflow-y-auto">
 			<table class="data-table">
 				<thead>
 					<tr>
@@ -106,22 +108,14 @@ export default {
 </script>
 
 <style scoped>
-.records-card {
-	padding: 0.7rem 1.2rem 1.5rem;
-	color: var(--text);
-}
-
-.card-title {
-	margin: 0.7rem;
-	color: var(--accent);
-	font-size: 1.4rem;
-}
+/* 移除了 .records-card 和 .card-title 的样式定义，改为 Tailwind 类 */
 
 .table-scroll {
+	/* 调整内层背景和边框颜色以适应深色卡片 */
 	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 10px;
-	padding: 8px;
-	background: rgba(26, 35, 51, 0.8);
+	border-radius: 8px;
+	padding: 6px;
+	background: rgba(17, 24, 39, 0.5); /* 比外层卡片稍深的背景 */
 	min-height: 0;
 	overflow-x: auto; /* 横向滚动 */
 	-webkit-overflow-scrolling: touch; /* 移动端顺滑滚动 */
@@ -136,20 +130,21 @@ export default {
 th,
 td {
 	padding: 8px;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* 调整边框颜色 */
 	text-align: center;
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(255, 255, 255, 0.85); /* 调整文本颜色 */
 	min-width: 120px; /* 列最小宽度，便于横向浏览 */
 }
 
 th {
-	background: rgba(255, 255, 255, 0.04);
-	color: rgba(255, 255, 255, 0.95);
+	background: rgba(255, 255, 255, 0.03); /* 调整表头背景 */
+	color: #fff;
 	font-weight: 600;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* 加粗表头底线 */
 }
 
 .abnormal {
-	color: var(--accent);
+	color: #f87171; /* 统一为亮红色 (Tailwind red-400) 作为强调色 */
 	font-weight: 700;
 }
 
@@ -161,15 +156,15 @@ th {
 
 /* 美化横向滚动条（WebKit） */
 .table-scroll::-webkit-scrollbar {
-	height: 10px;
+	height: 8px;
 }
 .table-scroll::-webkit-scrollbar-track {
-	background: rgba(255, 255, 255, 0.06);
-	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 4px;
 }
 .table-scroll::-webkit-scrollbar-thumb {
-	background: linear-gradient(135deg, var(--primary), var(--secondary));
-	border-radius: 8px;
+	/* 滚动条颜色也调整为深色主题下的一致色调 */
+	background: rgba(144, 202, 249, 0.5);
+	border-radius: 4px;
 }
 </style>
-

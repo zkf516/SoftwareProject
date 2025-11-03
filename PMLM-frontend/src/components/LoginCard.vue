@@ -34,15 +34,15 @@
       <button type="submit" class="login-btn">登 录</button>
     </form>
 
-    <!-- 医生表单 -->
+    <!-- 医生表单（修改为用户名/密码，匹配后端登录接口 username/password） -->
     <form v-show="identity === 'doctor'" id="doctor-form" class="login-form" @submit.prevent="submitDoctor">
       <div class="input-group">
         <i class="fa-solid fa-user-doctor"></i>
-        <input type="text" v-model="doctorName" id="doctor-name" placeholder="请输入姓名" required />
+        <input type="text" v-model="doctorUsername" id="doctor-username" placeholder="用户名 (如: doctor)" required />
       </div>
       <div class="input-group">
-        <i class="fa-solid fa-phone"></i>
-        <input type="text" v-model="doctorPhone" id="doctor-phone" placeholder="请输入手机号" required />
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" v-model="doctorPassword" id="doctor-password" placeholder="密码 (如: 123456)" required />
       </div>
       <button type="submit" class="login-btn">登 录</button>
     </form>
@@ -62,8 +62,9 @@ export default {
       identity: 'patient',
       patientName: '',
       patientNumber: '',
-      doctorName: '',
-      doctorPhone: ''
+      // 改为医生的用户名/密码字段，匹配后端 login 接口期望的 username/password
+      doctorUsername: '',
+      doctorPassword: ''
     };
   },
   computed: {
@@ -82,8 +83,9 @@ export default {
       alert(`病人登录: 姓名-${this.patientName}, 住院号/卡号-${this.patientNumber}`);
     },
     submitDoctor() {
-      this.$emit('doctor-submit', { name: this.doctorName, phone: this.doctorPhone });
-      alert(`医生登录: 姓名-${this.doctorName}, 手机号-${this.doctorPhone}`);
+      // Emit username/password，后端期望的字段名为 username/password
+      this.$emit('doctor-submit', { username: this.doctorUsername, password: this.doctorPassword });
+      alert(`医生登录: 用户名-${this.doctorUsername}`);
     },
     onRegister() {
       this.$emit('register');

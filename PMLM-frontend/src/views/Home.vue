@@ -71,7 +71,9 @@
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-44">
               <h1 class="text-xl font-bold text-white">病历信息</h1>
-              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容三：随访与健康建议。</p>
+              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容一：病人状况与病程。</p>
+              <button class="mt-2 rounded-md border border-gray-600 px-3 py-1.5 text-sm text-white/90 hover:bg-gray-800"
+                      @click.stop="$router.push('/dashboard')">进入面板</button>
             </div>
           </template>
         </FlipCard>
@@ -85,7 +87,9 @@
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-44">
               <h1 class="text-xl font-bold text-white">检测记录</h1>
-              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容二：用药记录与提醒。</p>
+              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容二：检测记录与提醒。</p>
+              <button class="mt-2 rounded-md border border-gray-600 px-3 py-1.5 text-sm text-white/90 hover:bg-gray-800"
+                      @click.stop="$router.push('/records')">进入记录</button>
             </div>
           </template>
         </FlipCard>
@@ -117,7 +121,7 @@
           <template #back>
             <div class="flex min-h-full flex-col gap-2 w-full md:w-44">
               <h1 class="text-xl font-bold text-white">更多功能</h1>
-              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">内容四：历史就诊记录。</p>
+              <p class="mt-1 border-t border-t-gray-200 py-4 text-base font-medium leading-normal text-gray-100">敬请期待</p>
             </div>
           </template>
         </FlipCard>

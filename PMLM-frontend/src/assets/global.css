@@ -22,6 +22,7 @@
     --devui-text-weak: #FFFFFF;
     --devui-form-control-bg: var(--input-bg, rgba(255, 255, 255, 0.1));
     --devui-list-item-active-text: #FFFFFF;
+    --devui-form-control-bg: var(--input-bg, rgba(255, 255, 255, 0.1));
     --devui-list-item-active-bg: rgba(255, 255, 255, 0.1);
     --button-bg: #93C5FD;
 
