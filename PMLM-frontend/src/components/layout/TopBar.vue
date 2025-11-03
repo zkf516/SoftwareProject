@@ -40,7 +40,17 @@ export default {
   data() {
     return {
       userName: localStorage.getItem('role') || '',
-      patientId: parseJWT(localStorage.getItem('token')).pid || '',
+      // 安全解析 token，避免 localStorage 为空或 parse 失败导致的空引用
+      patientId: (() => {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return '';
+          const payload = parseJWT(token);
+          return (payload && typeof payload === 'object' && 'pid' in payload) ? (payload.pid || '') : '';
+        } catch {
+          return '';
+        }
+      })(),
       tabs: ['首页','记录','咨询','面板'],
       activeTab: '首页',
       tabRouteMap: {
