@@ -22,3 +22,14 @@ def query_sqlite(sql, params=None, db_path='medical.db'):
         else:
             result = conn.execute(text(sql))
         return [dict(row._mapping) for row in result]
+    
+def execute_sql(sql, params=None, db_path='medical.db'):
+    """
+    执行无返回值的 SQL(如建表、插入、更新等)。
+    """
+    engine = create_engine(f'sqlite:///{db_path}')
+    with engine.begin() as conn:
+        if params:
+            conn.execute(text(sql), params)
+        else:
+            conn.execute(text(sql))

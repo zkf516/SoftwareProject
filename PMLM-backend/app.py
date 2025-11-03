@@ -1,11 +1,13 @@
 
 from flask import Flask, jsonify, request, g
 from flask_cors import CORS
-from utils.db_utils import excel_to_sqlite, query_sqlite
+from utils.db_utils import excel_to_sqlite, query_sqlite, execute_sql
 from utils.tools.OCR import OCRTool
 import os
 import random
 import jwt
+import json
+
 
 from datetime import datetime, timedelta, timezone
 from functools import wraps
@@ -63,6 +65,17 @@ def init_db():
     if not os.path.exists('medical.db'):
         excel_to_sqlite('disease.xlsx', 'patients')
         excel_to_sqlite('data.xlsx', 'records')
+    # 创建 ocr_results 表（如未存在）
+    create_ocr_table_sql = '''
+        CREATE TABLE IF NOT EXISTS ocr_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image_path TEXT,
+            result TEXT,
+            upload_time TEXT,
+            user_id TEXT
+        )
+    '''
+    execute_sql(create_ocr_table_sql)
 
 
 # ===== API 接口 =====
@@ -186,7 +199,27 @@ def recognize_image():
         params = json.dumps({"image_path": file_path})
         result = ocr_tool.call(params)
         
-        # 可选：处理完后删除临时文件，避免占用存储空间
+        
+
+        # g.user 是 dict（来自 jwt.decode），使用 .get()
+        user_id_val = ''
+        if getattr(g, 'user', None):
+            user_id_val = g.user.get('pid') or g.user.get('uid') or ''
+        # 强制转为字符串，避免 None 等问题
+        user_id_val = str(user_id_val)
+
+        # 保存识别结果到数据库
+        sql_insert = """
+            INSERT INTO ocr_results (image_path, result, upload_time, user_id)
+            VALUES (:image_path, :result, :upload_time, :user_id)
+        """
+        params_insert = {
+            'image_path': file_path,  # 图片保存的路径
+            'result': result,         # OCR识别出来的文字内容
+            'upload_time': datetime.now().isoformat(),  # 当前时间
+            'user_id': user_id_val  # 用户标识
+        }
+        execute_sql(sql_insert, params_insert)
         # os.remove(file_path)
         
         return jsonify({'status': 'success', 'result': result}), 200
@@ -231,6 +264,7 @@ def patient_records():
     """
     data = query_sqlite(sql, params)
     return jsonify(data)
+
 
 if __name__ == '__main__':
     init_db()
