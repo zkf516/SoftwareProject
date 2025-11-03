@@ -15,9 +15,6 @@
       <!-- 右侧：登录功能面板，保持卡片最大宽 450px，不改变原样 -->
       <div class="login-container !min-h-screen w-full max-w-[560px] flex flex-col items-center justify-center px-8 mr-15">
         <LoginCard @register="onRegister" @patient-submit="onPatientSubmit" @doctor-submit="onDoctorSubmit" />
-        <div class="z-10 flex h-40 w-full flex-col items-center justify-center">
-          <GradientButton :bg-color="bgColor" @click="goHome">Zooooooooooom 🚀</GradientButton>
-        </div>
       </div>
     </div>
     <!-- 全屏遮罩放在最外层，覆盖左右两侧 -->
@@ -59,10 +56,6 @@ export default {
       this.$router.push('/register')
     },
 
-    goHome() {
-      this.$router.push('/home')
-    },
-
     // 处理病人登录
     async onPatientSubmit(payload) {
       try {
@@ -89,7 +82,7 @@ export default {
         const rStore = useRecordsStore()
         this.busyMessage = '正在加载检查记录…'
         await rStore.fetchForCurrent(true)
-        this.$router.push('/dashboard')
+        this.$router.push('/home')
       } catch (e) {
         alert(e.message)
       } finally {

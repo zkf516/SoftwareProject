@@ -1,9 +1,9 @@
 <template>
 	<!-- 采用 PatientStatsCard 的卡片样式：深色背景、圆角、内边距和全宽 -->
-	<div class="w-full flex flex-col p-4 rounded-xl bg-gray-800 bg-opacity-60">
+	<div class="w-full flex flex-col p-4 rounded-xl bg-gray-800 bg-opacity-60 h-[90%] min-h-0">
 		
 		<!-- 保持横向滚动容器，增加最大高度和垂直滚动，以模拟 PatientStatsCard 的 max-h/[360px] 样式 -->
-		<div class="table-scroll max-h-[360px] overflow-y-auto">
+		<div class="table-scroll flex-1 min-h-0 h-full overflow-y-auto">
 			<table class="data-table">
 				<thead>
 					<tr>
