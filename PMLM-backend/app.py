@@ -265,6 +265,39 @@ def patient_records():
     data = query_sqlite(sql, params)
     return jsonify(data)
 
+# ===== 病人自己修改patient（全字段可改，仅锁主键） =====
+PROTECTED_KEYS = {'首页编号', '住院号', 'CARDNO', '序号'}   # 不允许碰
+
+@app.route('/api/patient/update', methods=['POST'])
+@auth_required
+def patient_update():
+    body = request.get_json(silent=True) or {}
+    pid = g.user.get('pid')
+    if not pid:
+        return jsonify({'error': '令牌无效'}), 401
+
+    # 1. 去掉主键，防止误改
+    to_update = {k: v for k, v in body.items() if k not in PROTECTED_KEYS}
+    if not to_update:
+        return jsonify({'error': '未提供可修改字段'}), 400
+
+    # 2. 构造 SET 子句
+    set_clause = ', '.join([f"{k} = :{k}" for k in to_update])
+    params = {**to_update, 'pid': pid}
+
+    # 3. 执行更新
+    sql = f"""
+        UPDATE patients
+        SET {set_clause}
+        WHERE CARDNO = :pid OR 住院号 = :pid
+    """
+    row_count = execute_sql(sql, params)
+    if row_count == 0:
+        return jsonify({'error': '未找到该病人或无需更新'}), 404
+
+    # 4. 返回更新后的完整记录
+    new_row = query_sqlite("SELECT * FROM patients WHERE CARDNO = :pid OR 住院号 = :pid", {'pid': pid})
+    return jsonify(new_row[0])
 
 if __name__ == '__main__':
     init_db()
