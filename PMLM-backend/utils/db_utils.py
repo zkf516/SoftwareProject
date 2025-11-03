@@ -26,10 +26,15 @@ def query_sqlite(sql, params=None, db_path='medical.db'):
 def execute_sql(sql, params=None, db_path='medical.db'):
     """
     执行无返回值的 SQL(如建表、插入、更新等)。
+    返回最后插入的 rowid(对于 INSERT 操作)。
     """
     engine = create_engine(f'sqlite:///{db_path}')
     with engine.begin() as conn:
         if params:
-            conn.execute(text(sql), params)
+            result = conn.execute(text(sql), params)
         else:
-            conn.execute(text(sql))
+            result = conn.execute(text(sql))
+        
+        # 返回最后插入的 rowid
+        last_row_id = result.lastrowid
+        return last_row_id
