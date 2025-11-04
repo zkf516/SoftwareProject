@@ -19,13 +19,12 @@ export enum LLMClientKey {
 
 export const LLM_MODELS: LLMModelsConfig[] = [
   {
-    // 硅基流动
-    providerKey: LLMProviders.SILICON_FLOW,
-    apiPath: "https://api.siliconflow.cn/v1",
-    apiKey: "",
+    // Qwen
+    providerKey: LLMProviders.QWEN,
+    apiPath: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    apiKey: "sk-9c01fc7d757e45619045bfadaea8b249",
     models: [
-      { name: "deepseek-ai/DeepSeek-R1", iconPath: DeepSeekIcon },
-      { name: "Qwen/Qwen3-8B", iconPath: QwenIcon },
+      { name: "Qwen/Qwen-plus", iconPath: QwenIcon },
     ],
     available: true,
     clientKey: LLMClientKey.openai,
