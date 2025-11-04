@@ -3,7 +3,7 @@
     <div class="navbar-top">
       <div class="navbar-header">
         <img :src="GlobalConfig.logoPath || Logo" />
-        <span>{{ GlobalConfig.title || "MateChat" }}</span>
+        <span>{{ GlobalConfig.title || "PMLMChat" }}</span>
       </div>
       <div class="dividing-line"></div>
       <div class="chat-box">

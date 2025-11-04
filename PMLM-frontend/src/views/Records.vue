@@ -20,7 +20,7 @@
         <div class="relative z-10 w-full h-full">
           <div class="flex items-center justify-between mb-7">
             <h2 class="text-2xl font-bold text-white tracking-wide">血常规历史数据</h2>
-            <button @click="openEditor" class="ml-4 rounded-md border border-gray-600 px-3 py-1.5 text-sm text-white/90 hover:bg-gray-800">修改</button>
+            <button @click="openEditor" class="ml-4 rounded-md border border-gray-600 px-3 py-1.5 text-sm text-white/90 hover:bg-gray-800">新增</button>
           </div>
           <RecordsCard :records="records" />
 

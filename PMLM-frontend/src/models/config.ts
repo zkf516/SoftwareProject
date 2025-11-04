@@ -24,7 +24,7 @@ export const LLM_MODELS: LLMModelsConfig[] = [
     apiPath: "https://dashscope.aliyuncs.com/compatible-mode/v1",
     apiKey: "sk-9c01fc7d757e45619045bfadaea8b249",
     models: [
-      { name: "Qwen/Qwen-plus", iconPath: QwenIcon },
+      { name: "qwen-plus", iconPath: QwenIcon },
     ],
     available: true,
     clientKey: LLMClientKey.openai,

@@ -9,22 +9,28 @@ export const introPromptCn = {
   direction: 'horizontal',
   list: [
     {
-      value: 'quickSort',
-      label: '帮我写一个快速排序',
+      value: 'feverCough',
+      label: '我发烧38度，咳嗽三天了，是感冒还是肺炎？要不要去医院？',
       iconConfig: { name: 'icon-info-o', color: '#5e7ce0' },
-      desc: '使用 js 快速实现一个可用的快速排序',
+      desc: '常见感冒与肺炎的初步判断与建议',
     },
     {
-      value: 'helpMd',
-      label: '你可以帮我做些什么？',
+      value: 'checkupAbnormal',
+      label: '体检报告说我“尿酸高”“脂肪肝”，这是不是得大病了？',
       iconConfig: { name: 'icon-star', color: 'rgb(255, 215, 0)' },
-      desc: '了解当前大模型可以帮你做的事',
+      desc: '体检异常指标的健康解读',
     },
     {
-      value: 'bindProjectSpace',
-      label: '怎么绑定项目空间',
+      value: 'insomniaHelp',
+      label: '晚上总是睡不着，白天头晕，能不能不吃安眠药？',
       iconConfig: { name: 'icon-priority', color: '#3ac295' },
-      desc: '如何绑定云空间中的项目',
+      desc: '失眠的非药物调理建议',
+    },
+    {
+      value: 'drugInteraction',
+      label: '我现在吃降压药，能不能同时吃布洛芬？会不会冲突？',
+      iconConfig: { name: 'icon-warning', color: '#e06c75' },
+      desc: '常见药物联用的注意事项',
     },
   ],
 };
@@ -32,37 +38,43 @@ export const introPromptEn = {
   direction: 'horizontal',
   list: [
     {
-      value: 'quickSort',
-      label: 'Help me write a quick sort',
+      value: 'feverCough',
+      label: 'I have a 38°C fever and cough for 3 days—cold, flu, or pneumonia? Should I go to the hospital?',
       iconConfig: { name: 'icon-info-o', color: '#5e7ce0' },
-      desc: 'Use js to quickly implement a usable quick sort',
+      desc: 'Initial advice for common cold vs. pneumonia',
     },
     {
-      value: 'helpMd',
-      label: 'What can you do for me?',
+      value: 'checkupAbnormal',
+      label: 'My check-up says high uric acid & fatty liver—do I have a serious illness?',
       iconConfig: { name: 'icon-star', color: 'rgb(255, 215, 0)' },
-      desc: 'Understand what the current big model can do for you',
+      desc: 'Health interpretation of abnormal check-up results',
     },
     {
-      value: 'bindProjectSpace',
-      label: 'How to bind a project space',
+      value: 'insomniaHelp',
+      label: 'I can’t sleep at night and feel dizzy all day—how can I avoid sleeping pills?',
       iconConfig: { name: 'icon-priority', color: '#3ac295' },
-      desc: 'How to bind a project in the cloud space',
+      desc: 'Non-drug advice for insomnia',
+    },
+    {
+      value: 'drugInteraction',
+      label: 'I’m on blood-pressure meds—can I safely take ibuprofen for pain?',
+      iconConfig: { name: 'icon-warning', color: '#e06c75' },
+      desc: 'Precautions for common drug combinations',
     },
   ],
 };
 
 export const guessQuestionsCn = [
-  { label: '帮我写一篇文章', value: 'article' },
-  { label: '你可以帮我做些什么？', value: 'helpMd' },
-  { label: '帮我写一个快速排序', value: 'quickSort' },
-  { label: '使用 js 格式化时间', value: 'formatDate' },
+  { label: '我发烧38度，咳嗽三天了，是感冒还是肺炎？要不要去医院？', value: 'feverCough' },
+  { label: '体检报告说我“尿酸高”“脂肪肝”，这是不是得大病了？', value: 'checkupAbnormal' },
+  { label: '晚上总是睡不着，白天头晕，能不能不吃安眠药？', value: 'insomniaHelp' },
+  { label: '我现在吃降压药，能不能同时吃布洛芬？会不会冲突？', value: 'drugInteraction' },
 ];
 export const guessQuestionsEn = [
-  { label: 'How to bind a project space', value: 'article' },
-  { label: 'List of recently executed pipelines', value: 'helpMd' },
-  { label: 'Help me write a quick sort', value: 'quickSort' },
-  { label: 'Use js to format time', value: 'formatDate' },
+  { label: 'I have a 38°C fever and cough for 3 days—cold, flu, or pneumonia? Should I go to the hospital?', value: 'feverCough' },
+  { label: 'My check-up says high uric acid & fatty liver—do I have a serious illness?', value: 'checkupAbnormal' },
+  { label: 'I can’t sleep at night and feel dizzy all day—how can I avoid sleeping pills?', value: 'insomniaHelp' },
+  { label: 'I’m on blood-pressure meds—can I safely take ibuprofen for pain?', value: 'drugInteraction' },
 ];
 
 export const mockAnswer = {

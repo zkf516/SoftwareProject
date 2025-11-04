@@ -1,5 +1,5 @@
 <template>
-  <McHeader :logoImg="Logo" :title="'MateChat'"></McHeader>
+  <McHeader :logoImg="Logo" :title="'PMLMChat'"></McHeader>
 </template>
 
 <script setup lang="ts">
