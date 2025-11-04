@@ -25,11 +25,36 @@ def query_sqlite(sql, params=None, db_path='medical.db'):
     
 def execute_sql(sql, params=None, db_path='medical.db'):
     """
-    执行无返回值的 SQL(如建表、插入、更新等)。
+    执行 SQL 语句，根据操作类型返回适当的结果
+    - INSERT: 返回 lastrowid
+    - UPDATE/DELETE: 返回受影响的行数 (rowcount)
+    - 其他操作 (CREATE等): 返回 True 表示成功
     """
-    engine = create_engine(f'sqlite:///{db_path}')
-    with engine.begin() as conn:
-        if params:
-            conn.execute(text(sql), params)
+    try:
+        engine = create_engine(f'sqlite:///{db_path}')
+        with engine.begin() as conn:
+            if params:
+                result = conn.execute(text(sql), params)
+            else:
+                result = conn.execute(text(sql))
+            
+            # 判断 SQL 类型并返回相应结果
+            sql_upper = sql.strip().upper()
+            
+            if sql_upper.startswith('INSERT'):
+                return result.lastrowid  # 返回新插入记录的ID
+            elif sql_upper.startswith('UPDATE') or sql_upper.startswith('DELETE'):
+                return result.rowcount   # 返回受影响的行数
+            else:
+                return True              # 其他操作返回成功标志
+                
+    except Exception as e:
+        print(f"数据库执行错误: {e}")
+        # 根据操作类型返回适当的失败值
+        sql_upper = sql.strip().upper() if sql else ""
+        if sql_upper.startswith('INSERT'):
+            return None
+        elif sql_upper.startswith('UPDATE') or sql_upper.startswith('DELETE'):
+            return 0
         else:
-            conn.execute(text(sql))
+            return False
