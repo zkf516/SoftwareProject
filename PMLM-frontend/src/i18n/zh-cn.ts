@@ -18,9 +18,9 @@ export default {
   welcome: {
     welcomeTo: "欢迎使用",
     description1:
-      "MateChat 可以辅助研发人员编码、查询知识和相关作业信息、编写文档等。",
+      "PMLMChat 可以为您提供医疗咨询、健康信息查询，并针对常见健康问题给出初步建议。",
     description2:
-      "作为AI模型，MateChat 提供的答案可能不总是确定或准确的，但您的反馈可以帮助 MateChat 做的更好。",
+      "作为AI模型，PMLMChat 的答案仅供参考，不能替代专业医疗诊断。您的反馈有助于 PMLMChat 持续改进。",
     guessYouWantAsk: "猜你想问",
     change: "换一批",
   },

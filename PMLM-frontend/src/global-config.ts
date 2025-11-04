@@ -2,5 +2,5 @@ import type { IGlobalConfig } from "@/global-config-types";
 
 export default {
   displayShape: "Immersive",
-  title: "MateChat",
+  title: "PMLMChat",
 } as IGlobalConfig;

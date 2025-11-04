@@ -12,10 +12,10 @@
       <div class="md:col-span-3 card aichat-card">
       <McLayout class="aichat-layout">
         <McLayoutHeader class="aichat-header">
-          <McHeader :logoImg="'/logo.svg'" :title="'MateChat'" />
+          <McHeader :logoImg="'/logo.svg'" :title="'PMLMChat'" />
         </McLayoutHeader>
         <McLayoutContent class="aichat-content">
-          <McBubble content="Hello MateChat" align="right"/>
+          <McBubble content="Hello PMLMChat" align="right"/>
           <McBubble content="Hello, what can I do for you?" />
         </McLayoutContent>
         <McLayoutSender class="aichat-sender">

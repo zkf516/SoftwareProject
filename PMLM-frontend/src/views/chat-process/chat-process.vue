@@ -37,7 +37,7 @@
           <McMarkdownCard
             :content="renderMessage(msg)"
             :theme="'dark'"
-            :enableThink="String(msg.from) !== 'user' && ((msg.reasoning_content && String(msg.reasoning_content).length > 0) || (msg.loading && Object.prototype.hasOwnProperty.call(msg, 'reasoning_content')))"
+            :enableThink="msg.reasoning_content"
           />
           <template #bottom>
             <div class="bubble-bottom-operations" v-if="msg.complete">
@@ -87,26 +87,21 @@ const getThinkingTime = (msg: IMessage) => {
   return 0;
 };
 
+// 打断思维链内部的两个及以上连续换行，避免渲染组件将其当作“分段分隔符”导致解析异常
+// 使用零宽空格(\u200B)保证视觉上仍然是空行
+const normalizeThinkNewlines = (text: string | undefined) =>
+  String(text ?? '').replace(/\n{2,}/g, '\n\u200B\n');
+
 const renderMessage = (msg: IMessage) => {
-  // If message comes from user or the server hasn't provided the reasoning_content property at all,
-  // just return content. But if the property exists (even empty string), render the <think> block
-  // so the markdown card can treat thinking and answer as distinct parts and keep consistent spacing
-  const hasReasoning = Object.prototype.hasOwnProperty.call(msg, 'reasoning_content');
-  if (String(msg.from) === 'user' || !hasReasoning) {
+  if (msg.from === 'user' || !msg.reasoning_content) {
     return msg.content;
   }
 
-  const reasoning = msg.reasoning_content || '';
-  const answer = msg.content || '';
+  const reasoning = normalizeThinkNewlines(msg.reasoning_content);
+  const answer = msg.content;
 
-  // 如果 reasoning_content 为空且消息已完成（非 loading），不要渲染空的思考块 — 直接返回答案
-  if (reasoning === '' && !msg.loading) {
-    return answer;
-  }
-
-  // 在思考块与回答之间增加明确的分隔（两个换行），便于渲染时换行显示
-  return `<think>${reasoning}</think>\n\n${answer}`;
-};
+  return `<think>${reasoning}</think>${answer}`;
+};  
 
 // 通过鼠标滚轮判断是否需要自动滚动到最底部
 const handleWheel = (e: WheelEvent) => {

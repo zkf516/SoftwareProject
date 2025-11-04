@@ -109,6 +109,7 @@ export const useChatMessageStore = defineStore("chat-message", () => {
   };
 
   const onMessageChange = (msg: ChunkResponse) => {
+    messages.value.at(-1).loading = false;
     const currentMessage = messages.value[messages.value.length - 1];
     if (!currentMessage.startTime) {
       currentMessage.startTime = Date.now();

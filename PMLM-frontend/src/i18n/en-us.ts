@@ -18,9 +18,9 @@ export default {
   welcome: {
     welcomeTo: "Welcome to",
     description1:
-      "MateChat can assist R&D personnel in coding, querying knowledge and related work information, writing documents, etc.",
+      "PMLMChat can assist you with medical consultations, health information, and provide preliminary advice for common health questions.",
     description2:
-      "As an AI model, the answers provided by MateChat may not always be definitive or accurate, but your feedback can help MateChat do better.",
+      "As an AI model, the answers provided by PMLMChat are for reference only and cannot replace professional medical diagnosis. Your feedback helps PMLMChat improve.",
     guessYouWantAsk: "Guess you want to ask",
     change: "Change",
   },
