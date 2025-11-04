@@ -41,10 +41,10 @@
                       <!-- 可滚动容器（垂直滚动） -->
                       <div ref="colScroller" class="overflow-y-auto no-scrollbar px-4" style="scroll-snap-type: y mandatory; max-height: 320px;">
                         <div class="flex flex-col gap-3 py-4">
-                          <template v-for="field in formFields" :key="field.key">
+                          <template v-for="field in formFields" :key="field.label">
                             <div class="w-full h-24" style="scroll-snap-align:start;">
                               <label class="text-sm text-slate-300">{{ field.label }}</label>
-                              <input v-model="form[field.key]" :type="field.type || 'text'" step="any" class="w-full mt-1 px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
+                              <input v-model="form[field.label]" :type="field.type || 'text'" step="any" class="w-full mt-1 px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
                             </div>
                           </template>
                         </div>
@@ -99,47 +99,47 @@ export default {
       editing: false,
       // 初始化 formFields 以确保模板使用时稳定并保持响应性
       formFields: [
-        { key: 'ph', label: '酸碱度', type: 'string' },
-        { key: 'alb', label: '白蛋白', type: 'string' },
-        { key: 'tp', label: '总蛋白', type: 'string' },
-        { key: 'ibil', label: '间接胆红素', type: 'string' },
-        { key: 'dbil', label: '直接胆红素', type: 'string' },
-        { key: 'tbil', label: '总胆红素', type: 'string' },
-        { key: 'alp', label: '碱性磷酸酶', type: 'string' },
-        { key: 'alt', label: '丙氨酸氨基转移酶', type: 'string' },
-        { key: 'prealb', label: '前白蛋白', type: 'string' },
-        { key: 'tba', label: '总胆汁酸', type: 'string' },
-        { key: 'lplt', label: '大血小板数目', type: 'string' },
-        { key: 'pcrit', label: '血小板压积', type: 'string' },
-        { key: 'lpr', label: '大血小板比率', type: 'string' },
-        { key: 'mpv', label: '平均血小板体积', type: 'string' },
-        { key: 'pdw', label: '血小板体积分布宽度', type: 'string' },
-        { key: 'rdw_cv', label: '红细胞体积分布宽度变异系数', type: 'string' },
-        { key: 'rdw_sd', label: '红细胞体积分布宽度标准差', type: 'string' },
-        { key: 'baso_abs', label: '嗜碱性粒细胞绝对数', type: 'string' },
-        { key: 'eos_abs', label: '嗜酸性粒细胞绝对数', type: 'string' },
-        { key: 'mono_abs', label: '单核细胞绝对数', type: 'string' },
-        { key: 'lymph_abs', label: '淋巴细胞绝对数', type: 'string' },
-        { key: 'neut_abs', label: '中性粒细胞绝对数', type: 'string' },
-        { key: 'baso_pct', label: '嗜碱性粒细胞比率', type: 'string' },
-        { key: 'eos_pct', label: '嗜酸性粒细胞比率', type: 'string' },
-        { key: 'mono_pct', label: '单核细胞比率', type: 'string' },
-        { key: 'lymph_pct', label: '淋巴细胞比率', type: 'string' },
-        { key: 'neut_pct', label: '中性粒细胞比率', type: 'string' },
-        { key: 'mchc', label: '平均红细胞血红蛋白浓度', type: 'string' },
-        { key: 'mch', label: '平均红细胞血红蛋白含量', type: 'string' },
-        { key: 'hct', label: '血细胞比容', type: 'string' },
-        { key: 'wbc', label: '白细胞计数', type: 'string' },
-        { key: 'platelet', label: '血小板总数', type: 'string' },
-        { key: 'hgb', label: '血红蛋白', type: 'string' },
-        { key: 'mcv', label: '平均红细胞体积', type: 'string' },
-        { key: 'rbc', label: '红细胞计数', type: 'string' }
+        { label: '酸碱度', type: 'string' },
+        { label: '白蛋白', type: 'string' },
+        { label: '总蛋白', type: 'string' },
+        { label: '间接胆红素', type: 'string' },
+        { label: '直接胆红素', type: 'string' },
+        { label: '总胆红素', type: 'string' },
+        { label: '碱性磷酸酶', type: 'string' },
+        { label: '丙氨酸氨基转移酶', type: 'string' },
+        { label: '前白蛋白', type: 'string' },
+        { label: '总胆汁酸', type: 'string' },
+        { label: '大血小板数目', type: 'string' },
+        { label: '血小板压积', type: 'string' },
+        { label: '大血小板比率', type: 'string' },
+        { label: '平均血小板体积', type: 'string' },
+        { label: '血小板体积分布宽度', type: 'string' },
+        { label: '红细胞体积分布宽度变异系数', type: 'string' },
+        { label: '红细胞体积分布宽度标准差', type: 'string' },
+        { label: '嗜碱性粒细胞绝对数', type: 'string' },
+        { label: '嗜酸性粒细胞绝对数', type: 'string' },
+        { label: '单核细胞绝对数', type: 'string' },
+        { label: '淋巴细胞绝对数', type: 'string' },
+        { label: '中性粒细胞绝对数', type: 'string' },
+        { label: '嗜碱性粒细胞比率', type: 'string' },
+        { label: '嗜酸性粒细胞比率', type: 'string' },
+        { label: '单核细胞比率', type: 'string' },
+        { label: '淋巴细胞比率', type: 'string' },
+        { label: '中性粒细胞比率', type: 'string' },
+        { label: '平均红细胞血红蛋白浓度', type: 'string' },
+        { label: '平均红细胞血红蛋白含量', type: 'string' },
+        { label: '血细胞比容', type: 'string' },
+        { label: '白细胞计数', type: 'string' },
+        { label: '血小板总数', type: 'string' },
+        { label: '血红蛋白', type: 'string' },
+        { label: '平均红细胞体积', type: 'string' },
+        { label: '红细胞计数', type: 'string' }
       ],
       form: {
-        // 预先声明常用字段以保证 v-model 绑定生效
-        date: '',
-        note: '',
-        ph: '', alb: '', tp: '', ibil: '', dbil: '', tbil: '', alp: '', alt: '', prealb: '', tba: '', lplt: '', pcrit: '', lpr: '', mpv: '', pdw: '', rdw_cv: '', rdw_sd: '', baso_abs: '', eos_abs: '', mono_abs: '', lymph_abs: '', neut_abs: '', baso_pct: '', eos_pct: '', mono_pct: '', lymph_pct: '', neut_pct: '', mchc: '', mch: '', hct: '', wbc: '', platelet: '', hgb: '', mcv: '', rbc: ''
+        // 使用中文标签作为键名
+        '检查日期': '',
+        '备注': '',
+        '酸碱度': '', '白蛋白': '', '总蛋白': '', '间接胆红素': '', '直接胆红素': '', '总胆红素': '', '碱性磷酸酶': '', '丙氨酸氨基转移酶': '', '前白蛋白': '', '总胆汁酸': '', '大血小板数目': '', '血小板压积': '', '大血小板比率': '', '平均血小板体积': '', '血小板体积分布宽度': '', '红细胞体积分布宽度变异系数': '', '红细胞体积分布宽度标准差': '', '嗜碱性粒细胞绝对数': '', '嗜酸性粒细胞绝对数': '', '单核细胞绝对数': '', '淋巴细胞绝对数': '', '中性粒细胞绝对数': '', '嗜碱性粒细胞比率': '', '嗜酸性粒细胞比率': '', '单核细胞比率': '', '淋巴细胞比率': '', '中性粒细胞比率': '', '平均红细胞血红蛋白浓度': '', '平均红细胞血红蛋白含量': '', '血细胞比容': '', '白细胞计数': '', '血小板总数': '', '血红蛋白': '', '平均红细胞体积': '', '红细胞计数': ''
       }
     }
   },
@@ -148,32 +148,48 @@ export default {
     openEditor() {
       // 初始化表单，默认日期为今天
       const d = new Date().toISOString().slice(0,10)
-      // 初始化所有字段（参考 RecordsCard 的 columns）
-      const keys = [
-        'date','ph','alb','tp','ibil','dbil','tbil','alp','alt','prealb','tba','lplt','pcrit','lpr','mpv','pdw','rdw_cv','rdw_sd','baso_abs','eos_abs','mono_abs','lymph_abs','neut_abs','baso_pct','eos_pct','mono_pct','lymph_pct','neut_pct','mchc','mch','hct','wbc','platelet','hgb','mcv','rbc'
+      // 使用中文标签初始化所有字段
+      const labels = [
+        '检查日期', '备注', '酸碱度', '白蛋白', '总蛋白', '间接胆红素', '直接胆红素', '总胆红素', '碱性磷酸酶', '丙氨酸氨基转移酶', '前白蛋白', '总胆汁酸', '大血小板数目', '血小板压积', '大血小板比率', '平均血小板体积', '血小板体积分布宽度', '红细胞体积分布宽度变异系数', '红细胞体积分布宽度标准差', '嗜碱性粒细胞绝对数', '嗜酸性粒细胞绝对数', '单核细胞绝对数', '淋巴细胞绝对数', '中性粒细胞绝对数', '嗜碱性粒细胞比率', '嗜酸性粒细胞比率', '单核细胞比率', '淋巴细胞比率', '中性粒细胞比率', '平均红细胞血红蛋白浓度', '平均红细胞血红蛋白含量', '血细胞比容', '白细胞计数', '血小板总数', '血红蛋白', '平均红细胞体积', '红细胞计数'
       ]
-      const obj = { date: d, note: '' }
-      for (const k of keys) if (!(k in obj)) obj[k] = ''
+      const obj = { '检查日期': d, '备注': '' }
+      for (const label of labels) if (!(label in obj)) obj[label] = ''
       this.form = obj
       this.editing = true
     },
     closeEditor() {
       this.editing = false
     },
-    // 已移除上下箭头控件，不再需要对应的滚动方法
     async saveRecord() {
       try {
         const token = localStorage.getItem('token')
-        // 直接提交整个表单对象
-        const payload = { ...this.form }
-        const res = await fetch(`${API_BASE}/api/records`, {
-          method: 'POST',
+        // 构建符合要求的数据结构，使用中文标签作为键
+        const payload = {}
+        
+        // 处理检查日期
+        if (this.form['检查日期']) {
+          payload['检查日期'] = this.form['检查日期']
+        }
+        
+        // 处理所有检测项，只包含有值的字段
+        for (const field of this.formFields) {
+          payload[field.label] = this.form[field.label]
+        }
+        
+        // 处理备注
+        if (this.form['备注']) {
+          payload['备注'] = this.form['备注']
+        }
+        
+        const res = await fetch(`${API_BASE}/api/record`, {
+          method: 'POST', // 或其他 HTTP 方法
           headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {})
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload)
         })
+        
         // 尝试解析响应，若非 JSON 则读取文本用于消息
         let data = null
         const ct = res.headers.get('content-type') || ''
@@ -185,6 +201,13 @@ export default {
         // 刷新记录
         const rStore = useRecordsStore()
         await rStore.fetchForCurrent(true)
+        
+        // *** 插入成功反馈 ***
+        // 使用 alert 提供最简单的成功反馈，保持与错误处理一致
+        // 在实际应用中，推荐使用不那么侵入式的通知/Toast组件。
+        alert('记录保存成功！') 
+        // *********************
+
         this.editing = false
       } catch (e) {
         alert(e.message || '保存失败')
