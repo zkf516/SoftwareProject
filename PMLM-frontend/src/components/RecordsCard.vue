@@ -88,7 +88,10 @@ export default {
 		},
 		// 返回 class 绑定对象
 		abnClass(name, val) {
-			return { abnormal: !!this.abnormalType(name, val) }
+			const t = this.abnormalType(name, val)
+			if (t === 'high') return 'abnormal-high'
+			if (t === 'low') return 'abnormal-low'
+			return ''
 		},
 		// 返回带箭头“↑/↓”的文本，并在数字与箭头之间加入窄空格（\u2009）
 		formatVal(name, val) {
@@ -162,9 +165,21 @@ th {
 	background: rgba(255, 255, 255, 0.08);
 	border-radius: 4px;
 }
+.abnormal-low {
+	color: #f87171; /* 红色，低于下限 */
+	font-weight: 700;
+}
+.abnormal-high {
+	color: #fbbf24; /* 黄色，超过上限 (Tailwind yellow-400) */
+	font-weight: 700;
+}
 .table-scroll::-webkit-scrollbar-thumb {
 	/* 滚动条颜色也调整为深色主题下的一致色调 */
 	background: rgba(144, 202, 249, 0.5);
 	border-radius: 4px;
 }
 </style>
+.abnormal-low::before, .abnormal-high::before {
+	content: '⚠';
+	margin-right: 6px;
+}
