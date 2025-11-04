@@ -65,16 +65,16 @@ export const introPromptEn = {
 };
 
 export const guessQuestionsCn = [
-  { label: '我发烧38度，咳嗽三天了，是感冒还是肺炎？要不要去医院？', value: 'feverCough' },
-  { label: '体检报告说我“尿酸高”“脂肪肝”，这是不是得大病了？', value: 'checkupAbnormal' },
-  { label: '晚上总是睡不着，白天头晕，能不能不吃安眠药？', value: 'insomniaHelp' },
-  { label: '我现在吃降压药，能不能同时吃布洛芬？会不会冲突？', value: 'drugInteraction' },
+  { label: '我发烧38度，咳嗽三天了，是感冒还是肺炎？要不要去医院？', value: 'article' },
+  { label: '体检报告说我“尿酸高”“脂肪肝”，这是不是得大病了？', value: 'helpMd' },
+  { label: '晚上总是睡不着，白天头晕，能不能不吃安眠药？', value: 'quickSort' },
+  { label: '我现在吃降压药，能不能同时吃布洛芬？会不会冲突？', value: 'formatDate' },
 ];
 export const guessQuestionsEn = [
-  { label: 'I have a 38°C fever and cough for 3 days—cold, flu, or pneumonia? Should I go to the hospital?', value: 'feverCough' },
-  { label: 'My check-up says high uric acid & fatty liver—do I have a serious illness?', value: 'checkupAbnormal' },
-  { label: 'I can’t sleep at night and feel dizzy all day—how can I avoid sleeping pills?', value: 'insomniaHelp' },
-  { label: 'I’m on blood-pressure meds—can I safely take ibuprofen for pain?', value: 'drugInteraction' },
+  { label: 'I have a 38°C fever and cough for 3 days—cold, flu, or pneumonia? Should I go to the hospital?', value: 'article' },
+  { label: 'My check-up says high uric acid & fatty liver—do I have a serious illness?', value: 'helpMd' },
+  { label: 'I can’t sleep at night and feel dizzy all day—how can I avoid sleeping pills?', value: 'quickSort' },
+  { label: 'I’m on blood-pressure meds—can I safely take ibuprofen for pain?', value: 'formatDate' },
 ];
 
 export const mockAnswer = {
